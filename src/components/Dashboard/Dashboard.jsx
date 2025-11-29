@@ -16,7 +16,7 @@ const Dashboard = () => {
           </div>
           <div>
             <h1 className="font-semibold text-2xl">1,100</h1>
-            <h1 className="text-zinc-500"> Total User</h1>
+            <h1 className="text-zinc-500"> Total Parents</h1>
           </div>
         </div>
         <div className="flex gap-4 items-center bg-white p-6 rounded shadow">
@@ -25,7 +25,7 @@ const Dashboard = () => {
           </div>
           <div>
             <h1 className="font-semibold text-2xl">1,100</h1>
-            <h1 className="text-zinc-500"> User Block</h1>
+            <h1 className="text-zinc-500"> User Child</h1>
           </div>
         </div>
         <div className="flex gap-4 items-center bg-white p-6 rounded shadow">
@@ -34,7 +34,7 @@ const Dashboard = () => {
           </div>
           <div>
             <h1 className="font-semibold text-2xl">1,100</h1>
-            <h1 className="text-zinc-500"> Total Subscriber</h1>
+            <h1 className="text-zinc-500"> Total Tutor</h1>
           </div>
         </div>
         <div className="flex gap-4 items-center bg-white p-6 rounded shadow">

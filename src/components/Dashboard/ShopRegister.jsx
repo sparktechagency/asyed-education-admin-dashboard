@@ -93,8 +93,8 @@ const ShopRegistration = () => {
           >
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#E63946" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#E63946" stopOpacity={0} />
+                <stop offset="5%" stopColor="#004F44" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#004F44" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#edc4c500" />
@@ -106,7 +106,7 @@ const ShopRegistration = () => {
             <Area
               type="monotone"
               dataKey="value"
-              stroke="#E63946"
+              stroke="#004F44"
               fillOpacity={1}
               fill="url(#colorValue)"
             />

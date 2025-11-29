@@ -73,7 +73,7 @@ const Profile = () => {
 
           <button
             type="primary"
-            className="w-full bg-[#E63946] text-white py-2"
+            className="w-full bg-[#004F44] text-white py-2"
           >
             Update
           </button>
@@ -126,7 +126,7 @@ const Profile = () => {
                   key={item.key}
                   className={`py-2 font-medium ${
                     activeTab === item.key
-                      ? "border-b border-[#E63946] text-[#E63946]"
+                      ? "border-b border-[#004F44] text-[#004F44]"
                       : "text-black hover:text-[#02111E]"
                   }`}
                   onClick={() => setActiveTab(item.key)}

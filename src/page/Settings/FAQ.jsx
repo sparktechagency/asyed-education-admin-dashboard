@@ -96,7 +96,7 @@ const FAQ = () => {
          <Navigate title={"Faq"} />
         <button
           onClick={() => setAddModalOpen(true)}
-          className="bg-[#E63946] text-white font-semibold px-5 py-2 rounded transition duration-200"
+          className="bg-[#004F44] text-white font-semibold px-5 py-2 rounded transition duration-200"
         >
           + Add FAQ
         </button>
@@ -114,7 +114,7 @@ const FAQ = () => {
                 {faq.question}
               </h2>
               <div className="flex gap-2 md:gap-4 items-center">
-                <div className="border-2 px-1.5 py-1 rounded border-[#E63946] bg-[#f0fcf4]">
+                <div className="border-2 px-1.5 py-1 rounded border-[#004F44] bg-[#f0fcf4]">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -124,10 +124,10 @@ const FAQ = () => {
                       setUpdateModalOpen(true);
                     }}
                   >
-                    <CiEdit className="text-2xl cursor-pointer text-[#E63946] font-bold transition-all" />
+                    <CiEdit className="text-2xl cursor-pointer text-[#004F44] font-bold transition-all" />
                   </button>
                 </div>
-                <div className="border-2 px-1.5 py-1 rounded border-[#E63946] bg-[#f0fcf4]">
+                <div className="border-2 px-1.5 py-1 rounded border-[#004F44] bg-[#f0fcf4]">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -180,11 +180,11 @@ const FAQ = () => {
           <div className="grid grid-cols-2 gap-4 mt-6">
             <button
               onClick={() => setAddModalOpen(false)}
-              className="py-2 px-4 rounded-lg border border-[#EF4444] bg-red-50"
+              className="py-2 px-4 rounded-lg border border-[#004F44] bg-red-50"
             >
               Cancel
             </button>
-            <button onClick={handleAddFaq} className="py-2 px-4 rounded-lg bg-[#E63946] text-white">
+            <button onClick={handleAddFaq} className="py-2 px-4 rounded-lg bg-[#004F44] text-white">
               Save
             </button>
           </div>
@@ -220,11 +220,11 @@ const FAQ = () => {
           <div className="grid grid-cols-2 gap-4 mt-6">
             <button
               onClick={() => setUpdateModalOpen(false)}
-              className="py-2 px-4 rounded-lg border border-[#EF4444] bg-red-50"
+              className="py-2 px-4 rounded-lg border border-[#004F44] bg-red-50"
             >
               Cancel
             </button>
-            <button onClick={handleUpdateFaq} className="py-2 px-4 rounded-lg bg-[#E63946] text-white">
+            <button onClick={handleUpdateFaq} className="py-2 px-4 rounded-lg bg-[#004F44] text-white">
               Save
             </button>
           </div>
@@ -238,11 +238,11 @@ const FAQ = () => {
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => setDeleteModalOpen(false)}
-              className="py-2 px-4 rounded-lg border border-[#EF4444] bg-red-50"
+              className="py-2 px-4 rounded-lg border border-[#004F44] bg-red-50"
             >
               Cancel
             </button>
-            <button onClick={handleDeleteFaq} className="py-2 px-4 rounded-lg bg-[#E63946] text-white">
+            <button onClick={handleDeleteFaq} className="py-2 px-4 rounded-lg bg-[#004F44] text-white">
               Delete
             </button>
           </div>

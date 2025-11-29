@@ -12,7 +12,7 @@ import create from "../../assets/routerImg/create.png";
 import settings from "../../assets/routerImg/settings.png";
 import subscription from "../../assets/routerImg/subscription.png";
 import user from "../../assets/routerImg/user.png";
-import logo from "../../assets/header/logo.png";
+import logo from "../../assets/header/logo1.png";
 import { FiUser } from "react-icons/fi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { TbCategory2 } from "react-icons/tb";

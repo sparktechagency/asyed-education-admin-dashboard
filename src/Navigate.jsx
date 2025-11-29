@@ -17,7 +17,7 @@ export const Navigate = ({title}) => {
             onClick={() => navigate(-1)}
             className="flex gap-3 cursor-pointer"
           >
-            <button className="bg-[#E63946] mt-[5px] text-sm w-5 h-5 rounded-full flex justify-center items-center text-white">
+            <button className="bg-[#004F44] mt-[5px] text-sm w-5 h-5 rounded-full flex justify-center items-center text-white">
               <FaArrowLeft />
             </button>
             <span className="text-lg font-semibold">{title}</span>

@@ -44,8 +44,9 @@ select option {
 
 .ant-table-thead > tr > th {
   border: none !important;
-  background: #f5f5f5; /* Optional: Header Background */
+  background: #E0FFFF; 
 }
+
 
 .ant-table-tbody > tr > td {
   border: none !important;
@@ -66,8 +67,8 @@ select option {
 
 /* Active pagination button */
 .ant-pagination-item-active {
-  background-color: #D9000A !important; /* Active background color */
-  border-color: #D9000A !important;    /* Active border color */
+  background-color: #004F44 !important; /* Active background color */
+  border-color: #004F44 !important;    /* Active border color */
 }
 
 /* Active pagination button text */
@@ -108,11 +109,11 @@ select option {
 
 
 .custom-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: red !important; /* Active ট্যাবের টেক্সট লাল হবে */
+  color: red !important;
 }
 
 .custom-tabs .ant-tabs-ink-bar {
-  background-color: red !important; /* Active ট্যাবের নিচের বর্ডার লাল হবে */
+  background-color: red !important; 
 }
 
 
@@ -121,17 +122,23 @@ select option {
 }
 
 .custom-tabs .ant-tabs-tab-btn:hover {
-  color: inherit !important; /* ট্যাবের বাটনের hover রঙ রিমুভ */
+  color: inherit !important;
 }
 
 
 .custom-tabs .ant-tabs-tab {
-  border-bottom: none !important; /* প্রতিটি ট্যাবের নিচে থাকা বর্ডার রিমুভ */
+  border-bottom: none !important;
 }
 
 .custom-tabs .ant-tabs-tab-active {
-  border-bottom: 2px solid red !important; /* শুধুমাত্র অ্যাক্টিভ ট্যাবের জন্য বর্ডার */
+  border-bottom: 2px solid red !important; 
 }
 
 
 
+.custom-table .ant-table-thead > tr > th {
+  background-color: #e0fff3; /* slate-800 */
+  color: black;
+  font-weight: 600;
+  padding: 15px;
+}

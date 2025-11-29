@@ -7,35 +7,61 @@
   },
   {
     "key": "userManagement",
-    "label": "User Management",
+    "label": "Parents Management",
     "icon": "FiUser",
-    "link": "/dashboard/UserManagement"
+    "link": "/dashboard/parentsManagement"
   },
+  {
+    "key": "tutorManagement",
+    "label": "Tutor Management",
+    "icon": "FiUser",
+    "link": "/dashboard/tutorManagement"
+  },
+   {
+    "key": "childManagement",
+    "label": "Child Management",
+    "icon": "FiUser",
+    "link": "/dashboard/childManagement"
+  },
+  {
+    "key": "conultManagement",
+    "label": "Consult Management",
+    "icon": "FiUser",
+    "link": "/dashboard/consultManagement"
+  },
+  {
+    "key": "tutionManagement",
+    "label": "Tution Management",
+    "icon": "FiUser",
+    "link": "/dashboard/tutionManagement"
+  },
+  {
+    "key": "adminManage",
+    "label": "Admin Management",
+    "icon": "FiUser",
+    "link": "/dashboard/adminManage"
+  },
+   {
+    "key": "blogManagement",
+    "label": "Blog Management",
+    "icon": "FiUser",
+    "link": "/dashboard/blogManagement"
+  },
+  {
+    "key": "videoCreatorManagement",
+    "label": "Video Management",
+    "icon": "FiUser",
+    "link": "/dashboard/videoCreatorManagement"
+  },
+   
+  {
+    "key": "banerManagement",
+    "label": "baner Management",
+    "icon": "FiUser",
+    "link": "/dashboard/bannerManagement"
+  },
+
   
-  {
-    "key": "categoriesManagement",
-    "label": "Categories Management",
-    "icon": "TbCategory2",
-    "link": "/dashboard/CategoriesManagement/Categories",
-    "children": [
-      {
-        "key": "categories",
-        "label": "Categories",
-        "link": "/dashboard/CategoriesManagement/Categories"
-      },
-      {
-        "key": "subcategory",
-        "label": "Subcategory",
-        "link": "/dashboard/CategoriesManagement/Subcategory"
-      }
-    ]
-  },
-  {
-    "key": "subscription",
-    "label": "Subscription",
-    "icon": "TbCategory2",
-    "link": "/dashboard/Subscription"
-  },
   {
     "key": "settings",
     "label": "Settings",

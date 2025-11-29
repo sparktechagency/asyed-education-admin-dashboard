@@ -2,14 +2,14 @@ import { Input, message, Pagination, Table } from "antd";
 import { useState } from "react";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
-import AddCategories from "./AddCategories";
-import EditCategories from "./EditCategories";
+
 import { Navigate } from "../../Navigate";
 import { SearchOutlined } from "@ant-design/icons";
+import AddBlog from "./AddBlog";
+import EditBlog from "./EditBlog";
 
-const Categories = () => {
-  const [deleteCategory] = useState(); // Placeholder, not used
+const BlogManagement = () => {
+  const [deleteCategory] = useState(); 
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -93,7 +93,7 @@ const Categories = () => {
       ),
     },
     {
-      title: "Category Name",
+      title: "Title",
       dataIndex: "name",
       key: "name",
       align: "center",
@@ -124,7 +124,7 @@ const Categories = () => {
   return (
     <div className="bg-white p-3 h-[87vh]">
       <div className="flex justify-between mb-4">
-        <Navigate title={"Category"} />
+        <Navigate title={"Blogs"} />
         <div className="flex gap-5">
           <Input
             onChange={(e) => {
@@ -139,9 +139,9 @@ const Categories = () => {
             {" "}
             <button
               onClick={() => setOpenAddModal(true)}
-              className="bg-[#E63946] w-[150px] text-white py-2 rounded"
+              className="bg-[#004F44] w-[150px] text-white py-2 rounded"
             >
-              Add Category
+              Add Blog
             </button>
           </div>
         </div>
@@ -167,11 +167,11 @@ const Categories = () => {
         />
       </div>
 
-      <AddCategories
+      <AddBlog
         openAddModal={openAddModal}
         setOpenAddModal={setOpenAddModal}
       />
-      <EditCategories
+    <EditBlog
         editModal={editModal}
         setEditModal={setEditModal}
         selectedCategory={selectedCategory}
@@ -180,4 +180,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default BlogManagement;
