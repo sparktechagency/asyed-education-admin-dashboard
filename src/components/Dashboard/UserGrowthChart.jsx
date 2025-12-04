@@ -66,7 +66,7 @@ const UserGrowthChart = () => {
         <h3
           style={{
             textAlign: "left",
-            marginBottom: "15px",
+           
             color: "#333",
             fontWeight: "bold",
             fontSize: "18px",
@@ -87,7 +87,7 @@ const UserGrowthChart = () => {
           options={years.map((item) => ({ value: item, label: item }))}
         />
       </div>
-      <ResponsiveContainer width="100%" height="85%">
+      <ResponsiveContainer width="100%" height="88%">
         <BarChart
           data={monthlyData}
           margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
@@ -118,7 +118,7 @@ const UserGrowthChart = () => {
             }}
             cursor={{ fill: "#edc4c52d" }}
           />
-          <Legend wrapperStyle={{ fontSize: "13px", fontWeight: "bold" }} />
+          
           <Bar
             dataKey="totalUser"
             fill="url(#colorValue)"

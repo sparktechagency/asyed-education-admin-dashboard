@@ -6,6 +6,7 @@ import UserGrowthChart from "./UserGrowthChart";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { VscNote } from "react-icons/vsc";
 import { PiMoneyLight } from "react-icons/pi";
+import Calender from "./Calender";
 const Dashboard = () => {
   return (
     <div className=" ">
@@ -58,7 +59,7 @@ const Dashboard = () => {
       </div>
 
       <div className="w-full bg-white p-4 rounded shadow mt-4">
-        <ShopRegistration></ShopRegistration>
+        <Calender></Calender>
       </div>
     </div>
   );
