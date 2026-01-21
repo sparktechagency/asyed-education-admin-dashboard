@@ -1,10 +1,22 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { message } from "antd";
 import JoditEditor from "jodit-react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "../../Navigate";
+import { useCreatePrivacyPolicyMutation, useGetPrivacyPolicyQuery } from "../redux/api/legalApi";
 
 const PrivacyPolicy = () => {
+
+  const [createPrivacyPolicy, { isLoading }] = useCreatePrivacyPolicyMutation()
+  const { data } = useGetPrivacyPolicyQuery()
+   useEffect(() => {
+    if (data?.data?.content) {
+      setContent(data?.data?.content);
+    }
+  }, [data]);
+
+
   const editor = useRef(null);
   const [content, setContent] = useState("");
   // const [isLoading, seLoading] = useState(false)
@@ -31,6 +43,23 @@ const PrivacyPolicy = () => {
     ],
   };
 
+
+
+   const onSubmit = async () => {
+    try {
+      const response = await createPrivacyPolicy({ content: content }).unwrap();
+      console.log("Privacy Policy response:", response);
+      if (response.success) {
+        message.success(response.message)
+      }
+      console.log(response)
+    } catch (error) {
+      message.error(error.data.message)
+      console.error(error);
+    }
+  };
+
+
   return (
     <div className=" bg-white p-3 ">
        <Navigate title="Privecy And Policy" />
@@ -45,8 +74,13 @@ const PrivacyPolicy = () => {
       />
 
       <div className="mt-5 flex justify-center">
-        <button className="bg-[#004F44] py-2 px-4 rounded text-white">
-          Save & change
+        <button 
+        onClick={onSubmit}
+        className="bg-[#004F44] py-2 px-4 rounded text-white">
+          {
+isLoading ? "Saving..." :"Save & change"
+          }
+          
         </button>
       </div>
     </div>

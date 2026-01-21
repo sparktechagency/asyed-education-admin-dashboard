@@ -1,5 +1,5 @@
 
-import logo from "../../assets/header/logo1.png";
+import logo from "../../assets/header/image.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { FaChevronRight, FaHome } from "react-icons/fa";
@@ -182,7 +182,7 @@ const SidBar = () => {
   return (
     <div className="custom-sidebar h-[100vh] bg-[#004F44] text-white">
       <div className="custom-sidebar-logo flex justify-center pb-6 pt-4">
-        <img src={logo} alt="Logo" className="w-[90px]" />
+        <img src={logo} alt="Logo"  />
       </div>
       <div className="menu-items">
         {items.map((item) => {

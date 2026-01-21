@@ -134,7 +134,7 @@ const AddTution = ({ openAddModal, setOpenAddModal }) => {
           <Form.Item>
           <button
               type="submit"
-              disabled={isLoading}
+              // disabled={isLoading}
               className={`
                 w-full py-3 flex items-center justify-center gap-3
                 bg-green-700 text-white rounded
@@ -142,7 +142,8 @@ const AddTution = ({ openAddModal, setOpenAddModal }) => {
                 transition-all font-medium
               `}
             >
-              {isLoading ? (
+              Continue
+              {/* {isLoading ? (
                 <>
                   <span className="raw-spinner"></span>
                   Signing in...
@@ -150,7 +151,7 @@ const AddTution = ({ openAddModal, setOpenAddModal }) => {
                 </>
               ) : (
                 "Continue"
-              )}
+              )} */}
             </button>
           </Form.Item>
 
