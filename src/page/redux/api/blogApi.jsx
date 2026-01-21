@@ -35,7 +35,7 @@ const blogApi = baseApi.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["Blogs"],
     }),
 
     updateBlog: builder.mutation({
@@ -46,7 +46,7 @@ const blogApi = baseApi.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["Blogs"],
     }),
 
     deleteBlog: builder.mutation({
@@ -56,11 +56,11 @@ const blogApi = baseApi.injectEndpoints({
           method: "DELETE",
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["Blogs"],
     }),
 
   
   }),
 });
 
-export const { useGetAllBlogsQuery } = blogApi;
+export const { useGetAllBlogsQuery, useAddBlogsMutation, useUpdateBlogMutation, useDeleteBlogMutation } = blogApi;

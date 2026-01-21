@@ -18,8 +18,10 @@ const FAQ = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedFaq, setSelectedFaq] = useState(null);
+
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
 
@@ -39,10 +41,12 @@ const FAQ = () => {
   // create FaQ function.
   const handleAddFaq = async () => {
   if (!question || !answer) {
+    
     return message.warning("Please fill all fields");
   }
 
   try {
+    setLoading(true);
     const payload = {
       question,
       answer,
@@ -63,6 +67,9 @@ const FAQ = () => {
       error?.data?.message || "Failed to add FAQ"
     );
   }
+  finally {
+      setLoading(false);
+    }
 };
 
 // upodate faq function
@@ -97,11 +104,13 @@ const handleUpdateFaq = async () => {
 
  // Delete FAQ
 const handleDeleteFaq = async () => {
+  setLoading(true);
   if (!selectedFaq?._id) {
     return message.error("No FAQ selected");
   }
 
   try {
+    setLoading
     await deleteFaq(selectedFaq._id).unwrap();
 
     message.success("FAQ deleted successfully");
@@ -115,6 +124,9 @@ const handleDeleteFaq = async () => {
       error?.data?.message || "Failed to delete FAQ"
     );
   }
+  finally {
+      setLoading(false);
+    }
 };
 
 
@@ -130,7 +142,7 @@ const handleDeleteFaq = async () => {
           onClick={() => setAddModalOpen(true)}
           className="bg-[#004F44] text-white font-semibold px-5 py-2 rounded transition duration-200"
         >
-          + Add FAQ
+         {loading ? "Loading..." : "+ Add FAQ"}
         </button>
       </div>
 
@@ -264,7 +276,7 @@ const handleDeleteFaq = async () => {
       </Modal>
 
       {/* Delete FAQ Modal */}
-      <Modal open={deleteModalOpen} centered onCancel={() => setDeleteModalOpen(false)} footer={null}>
+      <Modal open={deleteModalOpen} centered onCancel={() => setDeleteModalOpen(false)} footer={null} loading={loading}>
         <div className="p-5 text-center">
           <h2 className="text-2xl font-bold mb-6">Are you sure you want to delete?</h2>
           <div className="grid grid-cols-2 gap-4">
@@ -275,7 +287,7 @@ const handleDeleteFaq = async () => {
               Cancel
             </button>
             <button onClick={handleDeleteFaq} className="py-2 px-4 rounded-lg bg-[#004F44] text-white">
-              Delete
+             {loading ? "Loading..." : "Delete"}
             </button>
           </div>
         </div>

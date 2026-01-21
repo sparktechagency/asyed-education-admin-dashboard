@@ -7,15 +7,14 @@ import { Navigate } from "../../Navigate";
 import { SearchOutlined } from "@ant-design/icons";
 import AddBlog from "./AddBlog";
 import EditBlog from "./EditBlog";
-import { useGetAllBlogsQuery } from "../redux/api/blogApi";
+import { useDeleteBlogMutation, useGetAllBlogsQuery } from "../redux/api/blogApi";
 import { imageUrl } from "../redux/api/baseApi";
 
 const BlogManagement = () => {
 
-    const {data: blogsData, isLoading} = useGetAllBlogsQuery()
-    // console.log("Blogs Data:", blogsData?.data?.items);
+  const {data: blogsData, isLoading} = useGetAllBlogsQuery()
+  const [deleteFaq] = useDeleteBlogMutation();
 
-  const [deleteBlog] = useState(); 
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -23,6 +22,7 @@ const BlogManagement = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [loading, setLoading] = useState(false);
   // const isLoading = false; 
 
 
@@ -39,10 +39,6 @@ const BlogManagement = () => {
   blog?.title?.toLowerCase().includes(search?.toLowerCase())
 );
 
-  // const filteredBlogs = blogs.filter((blog) =>
-  //   blog?.name?.toLowerCase().includes(search?.toLowerCase())
-  // );
-
   // Paginate filtered data
   const total = filteredBlogs.length;
   const paginatedData = filteredBlogs.slice(
@@ -52,22 +48,53 @@ const BlogManagement = () => {
 
   const handlePageChange = (page) => setCurrentPage(page);
 
-  const handleDeleteBlog = (id) => {
-    setBlogs((prev) => prev.filter((blog) => blog._id !== id));
-    message.success("Blog deleted successfully");
-    // Adjust page if current page is now empty
-    if (paginatedData.length === 1 && currentPage > 1) {
-      setCurrentPage((prev) => Math.max(1, prev - 1));
-    }
-  };
 
-  // ✏️ Edit Handler
+ const handleDeleteFaq = async (id) => {
+  if (!id) {
+    return message.error("No FAQ selected");
+  }
+
+  try {
+    setLoading(true);
+
+
+    const response = await deleteFaq(id).unwrap();
+    console.log("Delete FAQ response:", response);
+
+    if (response?.success) {
+      
+      setBlogs((prev) => prev.filter((faq) => faq._id !== id));
+      message.success(response?.message || "FAQ deleted successfully");
+    } else {
+      message.error(response?.message || "Failed to delete FAQ");
+    }
+    
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "Failed to delete FAQ");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+  // const handleDeleteBlog = (id) => {
+  //   setBlogs((prev) => prev.filter((blog) => blog._id !== id));
+  //   message.success("Blog deleted successfully");
+  //   // Adjust page if current page is now empty
+  //   if (paginatedData.length === 1 && currentPage > 1) {
+  //     setCurrentPage((prev) => Math.max(1, prev - 1));
+  //   }
+  // };
+
+  //  Edit Handler
   const handleEdit = (record) => {
     setSelectedCategory(record);
     setEditModal(true);
   };
 
-  // 📝 Table Columns
+  //  Table Columns
   const columns = [
   {
     title: "SL No.",
@@ -106,7 +133,7 @@ const BlogManagement = () => {
           <MdOutlineModeEdit />
         </div>
         <div
-          onClick={() => handleDeleteBlog(record._id)}
+          onClick={() => handleDeleteFaq(record._id)}
           className="w-[36px] h-[36px] bg-[#E63946] flex justify-center items-center text-white rounded cursor-pointer"
         >
           <RiDeleteBin6Line />
@@ -166,11 +193,12 @@ const BlogManagement = () => {
         openAddModal={openAddModal}
         setOpenAddModal={setOpenAddModal}
       />
-    <EditBlog
-        editModal={editModal}
-        setEditModal={setEditModal}
-        selectedCategory={selectedCategory}
-      />
+   <EditBlog
+  editModal={editModal}
+  setEditModal={setEditModal}
+  selectedBlog={selectedCategory} 
+/>
+
     </div>
   );
 };

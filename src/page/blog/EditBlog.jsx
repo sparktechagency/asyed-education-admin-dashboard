@@ -1,8 +1,8 @@
 import { Form, Input, message, Modal, Spin, Upload } from "antd";
 import JoditEditor from "jodit-react";
-import React, { useEffect, useState, useRef } from "react";
-// import { useUpdateCategoryMutation } from "../redux/api/categoryApi";
-// import { imageUrl } from "../redux/api/baseApi";
+import { useEffect, useState, useRef } from "react";
+import { useUpdateBlogMutation } from "../redux/api/blogApi";
+
 
 const EditBlog = ({ editModal, setEditModal, selectedBlog }) => {
   const [form] = Form.useForm();
@@ -11,37 +11,22 @@ const EditBlog = ({ editModal, setEditModal, selectedBlog }) => {
   const [content, setContent] = useState("");
   const editor = useRef(null);
 
+  const [updateBlog] = useUpdateBlogMutation();
+
   const config = {
     readonly: false,
     height: 200,
   };
 
+  // Handle file list change
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
 
-  useEffect(() => {
-    if (editModal && selectedBlog) {
-      form.setFieldsValue({
-        title: selectedBlog.title,
-      });
-      setContent(selectedBlog.description || "");
-      setFileList(
-        selectedBlog.images?.length
-          ? selectedBlog.images.map((img, index) => ({
-              uid: `-${index}`,
-              name: `image-${index}.png`,
-              status: "done",
-              url: img, // if stored as full url
-            }))
-          : []
-      );
-    }
-  }, [editModal, selectedBlog, form]);
-
+  // Preview image
   const onPreview = async (file) => {
     let src = file.url;
-    if (!src) {
+    if (!src && file.originFileObj) {
       src = await new Promise((resolve) => {
         const reader = new FileReader();
         reader.readAsDataURL(file.originFileObj);
@@ -54,6 +39,28 @@ const EditBlog = ({ editModal, setEditModal, selectedBlog }) => {
     imgWindow?.document.write(image.outerHTML);
   };
 
+  // Populate form when modal opens
+  useEffect(() => {
+    if (editModal && selectedBlog) {
+      form.setFieldsValue({
+        title: selectedBlog.title,
+      });
+      setContent(selectedBlog.content || ""); // backend uses 'content'
+      setFileList(
+        selectedBlog.image
+          ? [
+              {
+                uid: "-1",
+                name: "current-image.png",
+                status: "done",
+                url: selectedBlog.image, // existing image URL
+              },
+            ]
+          : []
+      );
+    }
+  }, [editModal, selectedBlog, form]);
+
   const handleCancel = () => {
     form.resetFields();
     setFileList([]);
@@ -62,20 +69,49 @@ const EditBlog = ({ editModal, setEditModal, selectedBlog }) => {
   };
 
   const handleSubmit = async (values) => {
-    if (!content) {
-      message.error("Please enter blog description!");
-      return;
+    if (!content || content.length < 10) {
+      return message.error("Content must be at least 10 characters!");
     }
 
-    const updatedBlogData = {
-      title: values.title,
-      description: content,
-      images: fileList.map((file) => file.originFileObj || file.url),
-    };
+    if (!values.title || values.title.length < 3) {
+      return message.error("Title must be at least 3 characters!");
+    }
 
-    console.log("Updated Blog Data:", updatedBlogData);
-    message.success("Blog updated successfully!");
-    handleCancel();
+    if (!fileList[0]) {
+      return message.error("Please select or upload an image!");
+    }
+
+    setLoading(true);
+
+    try {
+      // Decide image: URL or new file object
+      const image = fileList[0].url || fileList[0].originFileObj;
+
+      const updatedBlogData = {
+        title: values.title,
+        content: content,
+        image: image, // backend should handle string URL or file upload
+      };
+
+      console.log("Submitting updated blog:", updatedBlogData);
+
+      const response = await updateBlog({
+        id: selectedBlog._id,
+        data: updatedBlogData,
+      }).unwrap();
+
+      if (response?.success) {
+        message.success(response?.message || "Blog updated successfully!");
+        handleCancel();
+      } else {
+        message.error(response?.message || "Failed to update blog");
+      }
+    } catch (error) {
+      console.error(error);
+      message.error(error?.data?.message || "Failed to update blog");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -90,17 +126,22 @@ const EditBlog = ({ editModal, setEditModal, selectedBlog }) => {
       <div className="mb-4 mt-4">
         <div className="font-bold text-center mb-6 text-lg">Edit Blog</div>
 
-        <Form form={form} layout="vertical" onFinish={handleSubmit} className="px-2">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          className="px-2"
+        >
           {/* Image Upload */}
-          <Form.Item label="Images">
+          <Form.Item label="Image">
             <Upload
               listType="picture-card"
               fileList={fileList}
               onChange={onChange}
               onPreview={onPreview}
-              multiple
+              maxCount={1} // single image
             >
-              {fileList.length < 5 && "+ Upload"}
+              {fileList.length < 1 && "+ Upload"}
             </Upload>
           </Form.Item>
 
@@ -113,8 +154,8 @@ const EditBlog = ({ editModal, setEditModal, selectedBlog }) => {
             <Input placeholder="Enter title" style={{ height: "40px" }} />
           </Form.Item>
 
-          {/* Blog Description */}
-          <Form.Item label="Description" required>
+          {/* Blog Content */}
+          <Form.Item label="Content" required>
             <JoditEditor
               ref={editor}
               value={content}

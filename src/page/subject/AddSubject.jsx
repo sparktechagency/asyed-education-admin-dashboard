@@ -23,7 +23,7 @@ const AddSubject = ({ openAddModal, setOpenAddModal }) => {
       // API payload
       const payload = { name: values.title };
 
-      const response = await addSubject(payload).unwrap(); // RTK Query unwrap to handle response/error
+      const response = await addSubject(payload).unwrap(); 
       console.log("API Response:", response);
 
       if (response?.success) {

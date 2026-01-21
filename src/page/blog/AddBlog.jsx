@@ -1,6 +1,7 @@
 import { Form, Input, message, Modal, Spin, Upload } from "antd";
 import JoditEditor from "jodit-react";
 import React, { useState, useRef } from "react";
+import { useAddBlogsMutation } from "../redux/api/blogApi";
 
 const onPreview = async (file) => {
   let src = file.url;
@@ -18,6 +19,8 @@ const onPreview = async (file) => {
 };
 
 const AddBlog = ({ openAddModal, setOpenAddModal }) => {
+
+  const [addBlog, {isLoading}] = useAddBlogsMutation();
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,25 +43,103 @@ const AddBlog = ({ openAddModal, setOpenAddModal }) => {
     setOpenAddModal(false);
   };
 
+
+
   const handleSubmit = async (values) => {
-    if (!content) {
-      message.error("Please enter blog description!");
-      return;
+  if (!content || content.length < 10) {
+    return message.error("Content must be at least 10 characters!");
+  }
+
+  if (!values.title || values.title.length < 3) {
+    return message.error("Title must be at least 3 characters!");
+  }
+
+  if (!fileList[0]) {
+    return message.error("Please select an image!");
+  }
+
+  setLoading(true);
+
+  try {
+    
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("content", content);
+    formData.append("image", fileList[0].originFileObj); 
+
+    const response = await addBlog(formData).unwrap();
+
+    if (response?.success) {
+      message.success(response?.message || "Blog added successfully!");
+      form.resetFields();
+      setContent("");
+      setFileList([]);
+      setOpenAddModal(false);
+    } else {
+      message.error(response?.message || "Failed to add blog");
     }
 
-    const blogData = {
-      title: values.title,
-      description: content,
-      images: fileList.map((file) => file.originFileObj),
-    };
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "Failed to add blog");
+  } finally {
+    setLoading(false);
+  }
+};
 
-    console.log("Submitted Blog Data:", blogData);
-    message.success("Blog added successfully!");
-    form.resetFields();
-    setFileList([]);
-    setContent("");
-    setOpenAddModal(false);
-  };
+
+
+
+// const handleSubmit = async (values) => {
+//   if (!content || content.length < 10) {
+//     return message.error("Content must be at least 10 characters!");
+//   }
+
+//   if (!values.title || values.title.length < 3) {
+//     return message.error("Title must be at least 3 characters!");
+//   }
+
+//   if (!fileList[0]?.url) {
+//     return message.error("Please select or upload an image first!");
+//   }
+//   console.log("Submitting with fileList:", fileList);
+
+//   setLoading(true);
+
+//   try {
+    
+//     const blogData = {
+//       title: values.title,
+//       content: content,
+//       image: fileList[0].url, 
+//     };
+//     console.log("Blog Data to Submit:", blogData);
+
+//     console.log("Submitting Blog Data:", blogData);
+
+//     const response = await addBlog(blogData).unwrap();
+//     console.log("Add Blog Response:", response);
+
+//     if (response?.success) {
+//       message.success(response?.message || "Blog added successfully!");
+//       form.resetFields();
+//       setContent("");
+//       setFileList([]);
+//       setOpenAddModal(false);
+//     } else {
+//       message.error(response?.message || "Failed to add blog");
+//     }
+
+//   } catch (error) {
+//     console.error(error);
+//     message.error(error?.data?.message || "Failed to add blog");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+
+
 
   return (
     <Modal
@@ -114,7 +195,7 @@ const AddBlog = ({ openAddModal, setOpenAddModal }) => {
           <Form.Item>
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading || loading}
               className="w-full py-2 mt-2 bg-[#004F44] text-white rounded-md flex justify-center items-center gap-2"
             >
               {loading ? <Spin size="small" /> : "Add Blog"}
