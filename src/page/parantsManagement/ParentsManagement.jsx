@@ -1,161 +1,202 @@
 import React, { useState } from "react";
-import { Input, Modal, Pagination, Table, message } from "antd";
+import {
+  Input,
+  Modal,
+  Pagination,
+  Table,
+  Tag,
+  Avatar,
+  Divider,
+} from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import { MdBlockFlipped } from "react-icons/md";
-import { FaArrowLeft } from "react-icons/fa";
+import { LuEye } from "react-icons/lu";
 import { AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
 import { GoLocation } from "react-icons/go";
-import { SearchOutlined } from "@ant-design/icons";
-import { LuEye } from "react-icons/lu";
 import { Navigate } from "../../Navigate";
+import { useGetAllParentsQuery } from "../redux/api/parantsApi";
 
 const ParentsManagement = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const [page, setPage] = useState(1);
+const [search, setSearch] = useState("");
+  const [selectedParent, setSelectedParent] = useState(null);
+  const limit = 10;
 
-  // Dummy data
-  const dummyUsers = Array.from({ length: 25 }, (_, index) => ({
-    key: index + 1,
-    no: index + 1,
-    name: `User ${index + 1}`,
-    email: `user${index + 1}@example.com`,
-    phone: `+8801${Math.floor(100000000 + Math.random() * 900000000)}`,
-    block: index + 1,
-    blockId: index % 2 === 0, // even users are blocked
-    image: `https://avatar.iran.liara.run/public/${index + 1}`,
-    createdAt: new Date().toLocaleDateString(),
-  }));
+  const { data, isLoading } = useGetAllParentsQuery({
+    page,
+    limit,
+    search,
+  });
 
-  // Modal states
-  const [isModalOpen2, setIsModalOpen2] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const parents = data?.data || [];
+  const meta = data?.meta;
 
-  const showModal2 = (record) => {
-    setSelectedUser(record);
-    setIsModalOpen2(true);
-  };
-
-  const handleCancel2 = () => {
-    setIsModalOpen2(false);
-    setSelectedUser(null);
-  };
-
-  // Dummy Block/Unblock
-  const handleBlockUnblock = (id) => {
-    message.success(`User with ID ${id} blocked/unblocked successfully`);
-  };
-
+  // ================= TABLE COLUMNS =================
   const columns = [
-    { title: "No", dataIndex: "no", key: "no" },
     {
-      title: "Name",
-      key: "name",
+      title: "No",
+      render: (_, __, index) => (page - 1) * limit + index + 1,
+    },
+    {
+      title: "Parent",
       render: (_, record) => (
         <div className="flex items-center gap-3">
-          <img
-            src={record.image}
-            className="w-10 h-10 object-cover rounded-full"
-            alt="User Avatar"
-          />
-          <span>{record.name}</span>
+          <Avatar size={40}>
+            {record?.user?.firstName?.charAt(0)}
+          </Avatar>
+          <div>
+            <p className="font-medium">
+              {record?.user?.firstName} {record?.user?.lastName}
+            </p>
+            <p className="text-xs text-gray-500">
+              {record?.user?.role}
+            </p>
+          </div>
         </div>
       ),
     },
-    { title: "Phone Number", dataIndex: "phone", key: "phone" },
-    { title: "Email", dataIndex: "email", key: "email" },
+    {
+      title: "Phone",
+      dataIndex: "phoneNumber",
+    },
+    {
+      title: "Email",
+      render: (_, record) => record?.user?.email,
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+    },
+    {
+      title: "Status",
+      render: (_, record) => (
+        <Tag color={record?.user?.isActive ? "green" : "red"}>
+          {record?.user?.isActive ? "Active" : "Blocked"}
+        </Tag>
+      ),
+    },
     {
       title: "Action",
-      key: "action",
       render: (_, record) => (
-        <div className="flex gap-2 items-center">
-          <button className="text-2xl" onClick={() => showModal2(record)}>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setSelectedParent(record)}
+            className="text-xl text-blue-600 hover:text-blue-800"
+          >
             <LuEye />
           </button>
-          <button
-            onClick={() => handleBlockUnblock(record?.block)}
-            className={`w-[30px] h-[30px] flex justify-center items-center text-xl rounded-md ${
-              record.blockId ? "bg-green-600" : "bg-red-600"
-            } text-white`}
+
+          <div
+            className={`w-8 h-8 flex items-center justify-center rounded-md text-white ${
+              record?.user?.isActive
+                ? "bg-green-600"
+                : "bg-red-600"
+            }`}
           >
             <MdBlockFlipped />
-          </button>
+          </div>
         </div>
       ),
     },
   ];
 
-  // Pagination
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  // Paginated data
-  const start = (currentPage - 1) * pageSize;
-  const end = start + pageSize;
-  const paginatedUsers = dummyUsers.slice(start, end);
-
   return (
-    <div className="bg-white p-3 h-[87vh] overflow-auto ">
-      <div className="flex justify-between ">
-        <Navigate title={"Parents Management"} />
+    <div className="bg-white p-4 h-[87vh] overflow-auto rounded-lg">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <Navigate title="Parents Management" />
+
         <Input
-          placeholder="Search by name..."
+          placeholder="Search by name or email"
           prefix={<SearchOutlined />}
-          style={{ marginBottom: "16px", maxWidth: "300px", height: "40px" }}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ maxWidth: 300, height: 40 }}
         />
       </div>
 
+      {/* Table */}
       <Table
-        dataSource={paginatedUsers}
+        loading={isLoading}
+        dataSource={parents}
         columns={columns}
+        rowKey="_id"
         pagination={false}
-        scroll={{ x: "max-content"}}
-        className="custom-table "
-        
+        scroll={{ x: "max-content" }}
       />
 
-      <div className="mt-4 flex justify-center">
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
         <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={dummyUsers.length}
-          onChange={handlePageChange}
+          current={page}
+          total={meta?.total || 0}
+          pageSize={limit}
+          onChange={(p) => setPage(p)}
           showSizeChanger={false}
         />
       </div>
 
-      {/* Modal */}
+      {/* ================= MODAL ================= */}
       <Modal
-        open={isModalOpen2}
-        centered
-        onCancel={handleCancel2}
+        open={!!selectedParent}
+        onCancel={() => setSelectedParent(null)}
         footer={null}
+        centered
+        width={600}
       >
-        {selectedUser && (
-          <div className="w-full max-w-md p-5 mx-auto">
-            <div className="flex flex-col items-center mb-6">
-              <div className="w-24 h-24 rounded-full bg-blue-100 mb-3 overflow-hidden">
-                <img
-                  src={selectedUser.image}
-                  alt="Profile avatar"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h2 className="text-xl font-bold">{selectedUser.name}</h2>
+        {selectedParent && (
+          <div>
+            {/* Parent Info */}
+            <div className="flex items-center gap-4">
+              <Avatar size={80}>
+                {selectedParent?.user?.firstName?.charAt(0)}
+              </Avatar>
 
-              <div className="flex items-center text-gray-500 mt-1">
-                <AiOutlinePhone size={16} className="text-gray-400" />
-                <span className="ml-1 text-sm">{selectedUser.phone}</span>
-              </div>
+              <div>
+                <h2 className="text-xl font-semibold">
+                  {selectedParent?.user?.firstName}{" "}
+                  {selectedParent?.user?.lastName}
+                </h2>
 
-              <div className="flex items-center text-gray-500 mt-1">
-                <GoLocation size={16} className="text-gray-400" />
-                <span className="ml-1 text-sm">Location unavailable</span>
-              </div>
+                <div className="flex items-center gap-2 text-gray-600 mt-1">
+                  <AiOutlineMail />
+                  <span>{selectedParent?.user?.email}</span>
+                </div>
 
-              <div className="flex items-center text-gray-500 mt-1">
-                <AiOutlineMail size={16} className="text-gray-400" />
-                <span className="ml-1 text-sm">{selectedUser.email}</span>
+                <div className="flex items-center gap-2 text-gray-600 mt-1">
+                  <AiOutlinePhone />
+                  <span>{selectedParent?.phoneNumber}</span>
+                </div>
+
+                <div className="flex items-center gap-2 text-gray-600 mt-1">
+                  <GoLocation />
+                  <span>{selectedParent?.address}</span>
+                </div>
               </div>
+            </div>
+
+            <Divider />
+
+            {/* Children Info */}
+            <h3 className="text-lg font-semibold mb-3">
+              Children Information
+            </h3>
+
+            <div className="space-y-3">
+              {selectedParent?.children?.map((child) => (
+                <div
+                  key={child._id}
+                  className="p-3 border rounded-lg"
+                >
+                  <p className="font-medium">{child.name}</p>
+                  <p className="text-sm text-gray-600">
+                    Age: {child.age}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Grade: {child.grade}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         )}

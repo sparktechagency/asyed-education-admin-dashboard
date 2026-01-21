@@ -1,5 +1,6 @@
 import { Form, Input, message, Modal, Spin, Upload } from "antd";
 import React, { useState } from "react";
+import { useAddTutorsMutation } from "../redux/api/parantsApi";
 
 const onPreview = async (file) => {
   let src = file.url;
@@ -17,6 +18,7 @@ const onPreview = async (file) => {
 };
 
 const AddTutor = ({ openAddModal, setOpenAddModal }) => {
+  const [addTutors] = useAddTutorsMutation()
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);

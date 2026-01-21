@@ -1,17 +1,37 @@
 import React, { useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { FaEye, FaEyeSlash, FaGoogle, FaFacebookF } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useForgotPasswordMutation } from "../page/redux/api/userApi";
 
 
 const ForgetPass = () => {
-  
+  const [forgetPass , { isLoading }] = useForgotPasswordMutation()
   const [form] = Form.useForm();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const onFinish = (values) => {
-    console.log("Form Values:", values);
+  const navigate = useNavigate()
+
+  const onFinish = async (values) => {
+    const payload = {
+      email: values.email,
+    };
+
+    try {
+      await forgetPass(payload).unwrap();
+
+      localStorage.setItem("forgotPasswordEmail", values.email);
+
+      message.success("Password reset link/code sent to your email!");
+
+      // Redirect to verification/OTP page
+      navigate("/verification");
+    } catch (err) {
+      const errorMsg =
+        err?.data?.message ||
+        err?.data?.error ||
+        "Failed to send reset request. Please try again.";
+      message.error(errorMsg);
+    }
   };
   return (
     <div className="flex justify-center items-center min-h-screen px-4 lg:px-0">
@@ -41,13 +61,25 @@ const ForgetPass = () => {
 
           {/* Continue Button */}
           <Form.Item>
-            <Link to={'/verification'}><button
-              
-              htmlType="submit"
-              className="w-full bg-red-500 py-3 text-white rounded-md hover:bg-primary-dark transition-colors"
-            >
-              Continue
-            </button></Link>
+          <button
+                type="submit"
+                disabled={isLoading}
+                className={`
+    w-full py-3 flex items-center justify-center gap-3
+    bg-green-700 text-white rounded
+    hover:bg-green-800 disabled:bg-green-800/60
+    transition-all font-medium
+  `}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="raw-spinner"></span>
+                    Forgor Pass...
+                  </>
+                ) : (
+                  "Forget Pass"
+                )}
+              </button>
           </Form.Item>
         </Form>
 

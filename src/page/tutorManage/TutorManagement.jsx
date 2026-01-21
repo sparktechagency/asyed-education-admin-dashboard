@@ -1,206 +1,127 @@
-import { Input, message, Pagination, Table, Modal } from "antd";
+import { Input, Pagination, Table, Modal, Tag } from "antd";
 import { useState } from "react";
 import { EyeOutlined } from "@ant-design/icons";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiBlock } from "react-icons/bi";
-
 import { Navigate } from "../../Navigate";
+import { useGetAllTutorsQuery } from "../redux/api/parantsApi";
 import AddTutor from "./AddTutor";
-
+import { RiDeleteBin6Line } from "react-icons/ri";
 const TutorManagement = () => {
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const [page, setPage] = useState(1);
+  const limit = 10;
+const [openAddModal, setOpenAddModal] = useState(false);
 
-  const [tutors, setTutors] = useState([
-    {
-      _id: "1",
-      name: "Mr. Rahman",
-      email: "rahman@example.com",
-      subject: "Mathematics",
-      location: "Dhaka, Bangladesh",
-      imageUrl: "https://i.ibb.co/1QbVGFw/teacher1.png",
-      blocked: false,
-    },
-    {
-      _id: "2",
-      name: "Mrs. Amina",
-      email: "amina@example.com",
-      subject: "Science",
-      location: "Chittagong, Bangladesh",
-      imageUrl: "https://i.ibb.co/5nC2vbf/teacher2.png",
-      blocked: false,
-    },
-    {
-      _id: "3",
-      name: "Mr. Karim",
-      email: "karim@example.com",
-      subject: "English",
-      location: "Khulna, Bangladesh",
-      imageUrl: "https://i.ibb.co/KWDFBH0/teacher3.png",
-      blocked: true,
-    },
-  ]);
+  const { data, isLoading } = useGetAllTutorsQuery({
+    search,
+    page,
+    limit,
+  });
 
-  const [openAddModal, setOpenAddModal] = useState(false);
+  const tutors = data?.data || [];
+  const meta = data?.meta;
+
   const [selectedTutor, setSelectedTutor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Search Filter
-  const filteredTutors = tutors.filter((tutor) =>
-    tutor.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  // Paginate filtered data
-  const total = filteredTutors.length;
-  const paginatedData = filteredTutors.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
-  const handlePageChange = (page) => setCurrentPage(page);
-
-  const handleDeleteTutor = (_id) => {
-    setTutors((prev) => prev.filter((t) => t._id !== _id));
-    message.success("Tutor deleted successfully");
-  };
-
-  const handleBlockTutor = (id) => {
-    setTutors((prev) =>
-      prev.map((t) =>
-        t._id === id ? { ...t, blocked: !t.blocked } : t
-      )
-    );
-    message.success("Tutor status updated");
-  };
-
-  const handleView = (tutor) => {
-    setSelectedTutor(tutor);
+  const handleView = (record) => {
+    setSelectedTutor(record);
     setIsModalOpen(true);
   };
 
+  /* ================= TABLE COLUMNS ================= */
+
   const columns = [
     {
-      title: "SL No.",
-      key: "sl",
-      render: (_, __, index) => (currentPage - 1) * pageSize + (index + 1),
+      title: "SL",
+      render: (_, __, index) => (page - 1) * limit + index + 1,
       align: "center",
     },
     {
-      title: "Tutor",
-      key: "tutor",
+      title: "Tutor Name",
       render: (_, record) => (
-        <div className="flex items-center gap-3">
-          <img
-            src={record.imageUrl}
-            alt={record.name}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <span>{record.name}</span>
-        </div>
+        <span className="font-medium">
+          {record.user.firstName} {record.user.lastName}
+        </span>
+      ),
+    },
+    {
+      title: "Email",
+      render: (_, record) => record.user.email,
+    },
+    {
+      title: "Subjects",
+      render: (_, record) => (
+        <Tag color="blue">{record.subjects.length} Subjects</Tag>
       ),
       align: "center",
     },
+    
     {
-      title: "E-mail",
-      dataIndex: "email",
-      key: "email",
-      align: "center",
-    },
-    {
-      title: "Subject",
-      dataIndex: "subject",
-      key: "subject",
-      align: "center",
-    },
-    {
-      title: "Location",
-      dataIndex: "location",
-      key: "location",
-      align: "center",
-    },
-    {
-      title: "Actions",
-      key: "actions",
+      title: "Action",
       align: "center",
       render: (_, record) => (
-        <div className="flex justify-center items-center gap-2">
-          {/* View Details */}
-          <button
-            onClick={() => handleView(record)}
-            className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all"
-          >
-            <EyeOutlined />
-          </button>
-
-          {/* Block/Unblock */}
-          <button
-            onClick={() => handleBlockTutor(record._id)}
-            className={`p-2 rounded text-white transition-all ${
-              record.blocked ? "bg-yellow-600 hover:bg-yellow-700" : "bg-gray-600 hover:bg-gray-700"
-            }`}
-          >
-            <BiBlock />
-          </button>
-
-          {/* Delete */}
-          <button
-            onClick={() => handleDeleteTutor(record._id)}
-            className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition-all"
-          >
-            <RiDeleteBin6Line />
-          </button>
-        </div>
+     <div className="flex justify-center items-center gap-2">
+      
+       <BiBlock
+          size={22}
+          className={`cursor-pointer ${
+            record.user.isActive ? "text-green-600" : "text-red-600"
+          }`}
+        />
+         <button
+          onClick={() => handleView(record)}
+          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          <EyeOutlined />
+        </button>
+        <button  className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition-all" > <RiDeleteBin6Line /> </button>
+     </div>
       ),
     },
   ];
 
   return (
-    <div className="bg-white p-3 h-[87vh]">
+    <div className="bg-white p-4 h-[87vh] overflow-auto">
+      {/* Header */}
       <div className="flex justify-between mb-4">
-        <Navigate title={"Tutor Management"} />
-        <div className="flex gap-5">
-          <Input
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
-            }}
-            placeholder="Search by name..."
-            style={{ maxWidth: "500px", height: "40px" }}
-          />
-          <div>
-            <button
-            onClick={() => setOpenAddModal(true)}
-            className="bg-[#004F44] w-[150px] text-white py-2 rounded"
-          >
-            Add Tutor
-          </button>
-          </div>
-        </div>
+        <Navigate title="Tutor Management" />
+       <div className="flex gap-5">
+         <Input
+          placeholder="Search tutor..."
+          allowClear
+          style={{ width: 300 }}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+        />
+        <button onClick={() => setOpenAddModal(true)} className="bg-[#004F44] w-[150px] text-white py-2 rounded" > Add Tutor </button>
+       </div>
       </div>
 
+      {/* Table */}
       <Table
-        dataSource={paginatedData}
+        loading={isLoading}
+        dataSource={tutors}
         columns={columns}
         rowKey="_id"
         pagination={false}
-        scroll={{ x: "max-content" }}
-         className="custom-table"
+        className="custom-table"
       />
 
+      {/* Pagination */}
       <div className="mt-4 flex justify-center">
         <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={total}
-          onChange={handlePageChange}
+          current={page}
+          total={meta?.total || 0}
+          pageSize={limit}
+          onChange={(p) => setPage(p)}
           showSizeChanger={false}
         />
       </div>
 
-      <AddTutor openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} />
-
-      {/* View Modal */}
+      {/* ================= MODAL ================= */}
       <Modal
         title="Tutor Details"
         open={isModalOpen}
@@ -208,23 +129,48 @@ const TutorManagement = () => {
         footer={null}
       >
         {selectedTutor && (
-          <div className="text-center">
-            <img
-              src={selectedTutor.imageUrl}
-              alt={selectedTutor.name}
-              className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
-            />
-            <h2 className="text-xl font-bold">{selectedTutor.name}</h2>
-            <p><strong>E-mail:</strong> {selectedTutor.email}</p>
-            <p><strong>Subject:</strong> {selectedTutor.subject}</p>
-            <p><strong>Location:</strong> {selectedTutor.location}</p>
+          <div className="space-y-3">
+            <h2 className="text-xl font-semibold">
+              {selectedTutor.user.firstName} {selectedTutor.user.lastName}
+            </h2>
+
+            <p>
+              <strong>Email:</strong> {selectedTutor.user.email}
+            </p>
+
             <p>
               <strong>Status:</strong>{" "}
-              {selectedTutor.blocked ? "Blocked" : "Active"}
+              <Tag color={selectedTutor.user.isActive ? "green" : "red"}>
+                {selectedTutor.user.isActive ? "Active" : "Blocked"}
+              </Tag>
             </p>
+
+            <p>
+              <strong>Bio:</strong> {selectedTutor.bio}
+            </p>
+
+            <p>
+              <strong>Qualifications:</strong>
+            </p>
+            <ul className="list-disc ml-5">
+              {selectedTutor.qualifications.map((q, i) => (
+                <li key={i}>{q}</li>
+              ))}
+            </ul>
+
+            <p className="font-semibold mt-3">Availability:</p>
+            {Object.entries(selectedTutor.availability).map(
+              ([day, times]) => (
+                <p key={day}>
+                  <strong className="capitalize">{day}:</strong>{" "}
+                  {times.join(", ")}
+                </p>
+              )
+            )}
           </div>
         )}
       </Modal>
+      <AddTutor openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} />
     </div>
   );
 };
