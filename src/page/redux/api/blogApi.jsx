@@ -3,7 +3,20 @@ import { baseApi } from "./baseApi";
 const blogApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
-  
+  //  getBlogs: builder.query({
+  //           query: (params) => {
+  //               const { search } = params || {};
+  //               const queryParams = new URLSearchParams();
+  //               if (search) queryParams.append('search', search);
+                
+
+  //               return {
+  //                   url: `/blog?${queryParams.toString()}`,
+  //                   method: 'GET',
+  //               };
+  //           },
+  //           providesTags: ['Blogs'],
+  //       }),
     getAllBlogs: builder.query({
       query: () => {
         return {
@@ -11,7 +24,7 @@ const blogApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["updateProfile"],
+      providesTags: ['Blogs'],
     }),
 
     addBlogs: builder.mutation({
@@ -50,4 +63,4 @@ const blogApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllParentsQuery } = blogApi;
+export const { useGetAllBlogsQuery } = blogApi;

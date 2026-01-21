@@ -1,5 +1,5 @@
 import { Input, message, Pagination, Table } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
@@ -7,58 +7,54 @@ import { Navigate } from "../../Navigate";
 import { SearchOutlined } from "@ant-design/icons";
 import AddBlog from "./AddBlog";
 import EditBlog from "./EditBlog";
+import { useGetAllBlogsQuery } from "../redux/api/blogApi";
+import { imageUrl } from "../redux/api/baseApi";
 
 const BlogManagement = () => {
-  const [deleteCategory] = useState(); 
+
+    const {data: blogsData, isLoading} = useGetAllBlogsQuery()
+    // console.log("Blogs Data:", blogsData?.data?.items);
+
+  const [deleteBlog] = useState(); 
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
-  const [categories, setCategories] = useState([
-    {
-      _id: "1",
-      name: "Electronics",
-      imageUrl: "https://via.placeholder.com/100x100/007BFF/ffffff?text=Electronics"
-    },
-    {
-      _id: "2",
-      name: "Clothing",
-      imageUrl: "https://via.placeholder.com/100x100/E63946/ffffff?text=Clothing"
-    },
-    {
-      _id: "3",
-      name: "Books",
-      imageUrl: "https://via.placeholder.com/100x100/28A745/ffffff?text=Books"
-    },
-    {
-      _id: "4",
-      name: "Home & Garden",
-      imageUrl: "https://via.placeholder.com/100x100/FFC107/000000?text=Home"
-    },
-   
-  ]);
+  const [blogs, setBlogs] = useState([]);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const isLoading = false; 
-  const imageUrl = ""; 
+  // const isLoading = false; 
 
-  // Filter categories based on search
-  const filteredCategories = categories.filter((cat) =>
-    cat.name.toLowerCase().includes(search.toLowerCase())
-  );
+
+    useEffect(() => {
+    if (blogsData?.data?.items) {
+      console.log("Setting blogs from fetched data", blogsData.data.items);
+      setBlogs(blogsData.data.items);
+    }
+  }, [blogsData]);
+
+  // Filter blogs based on search
+
+  const filteredBlogs = blogs.filter((blog) =>
+  blog?.title?.toLowerCase().includes(search?.toLowerCase())
+);
+
+  // const filteredBlogs = blogs.filter((blog) =>
+  //   blog?.name?.toLowerCase().includes(search?.toLowerCase())
+  // );
 
   // Paginate filtered data
-  const total = filteredCategories.length;
-  const paginatedData = filteredCategories.slice(
+  const total = filteredBlogs.length;
+  const paginatedData = filteredBlogs.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
   const handlePageChange = (page) => setCurrentPage(page);
 
-  const handleDeleteCategory = (id) => {
-    setCategories((prev) => prev.filter((cat) => cat._id !== id));
-    message.success("Category deleted successfully");
+  const handleDeleteBlog = (id) => {
+    setBlogs((prev) => prev.filter((blog) => blog._id !== id));
+    message.success("Blog deleted successfully");
     // Adjust page if current page is now empty
     if (paginatedData.length === 1 && currentPage > 1) {
       setCurrentPage((prev) => Math.max(1, prev - 1));
@@ -73,53 +69,52 @@ const BlogManagement = () => {
 
   // 📝 Table Columns
   const columns = [
-    {
-      title: "SL No.",
-      dataIndex: "sl",
-      key: "sl",
-      render: (_, __, index) => (currentPage - 1) * pageSize + (index + 1),
-    },
-    {
-      title: "Image",
-      dataIndex: "image",
-      key: "image",
-      align: "center",
-      render: (_, record) => (
-        <img
-          src={record.imageUrl}
-          alt={record.name}
-          className="w-10 h-10 object-cover rounded mx-auto"
-        />
-      ),
-    },
-    {
-      title: "Title",
-      dataIndex: "name",
-      key: "name",
-      align: "center",
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      align: "right",
-      render: (_, record) => (
-        <div className="flex gap-2 justify-end">
-          <div
-            onClick={() => handleEdit(record)}
-            className="w-[36px] h-[36px] text-lg bg-[#007BFF] flex justify-center items-center text-white rounded cursor-pointer"
-          >
-            <MdOutlineModeEdit />
-          </div>
-          <div
-            onClick={() => handleDeleteCategory(record._id)}
-            className="w-[36px] h-[36px] text-lg bg-[#E63946] flex justify-center items-center text-white rounded cursor-pointer"
-          >
-            <RiDeleteBin6Line />
-          </div>
+  {
+    title: "SL No.",
+    key: "sl",
+    render: (_, __, index) =>
+      (currentPage - 1) * pageSize + (index + 1),
+  },
+  {
+    title: "Image",
+    key: "image",
+    align: "center",
+    render: (_, record) => (
+      <img
+        src={`${imageUrl}/${record?.image}`}
+        alt={record.title}
+        className="w-10 h-10 object-cover rounded mx-auto"
+      />
+    ),
+  },
+  {
+    title: "Title",
+    dataIndex: "title",
+    key: "title",
+    align: "center",
+  },
+  {
+    title: "Actions",
+    key: "actions",
+    align: "right",
+    render: (_, record) => (
+      <div className="flex gap-2 justify-end">
+        <div
+          onClick={() => handleEdit(record)}
+          className="w-[36px] h-[36px] bg-[#007BFF] flex justify-center items-center text-white rounded cursor-pointer"
+        >
+          <MdOutlineModeEdit />
         </div>
-      ),
-    },
-  ];
+        <div
+          onClick={() => handleDeleteBlog(record._id)}
+          className="w-[36px] h-[36px] bg-[#E63946] flex justify-center items-center text-white rounded cursor-pointer"
+        >
+          <RiDeleteBin6Line />
+        </div>
+      </div>
+    ),
+  },
+];
 
   return (
     <div className="bg-white p-3 h-[87vh]">
