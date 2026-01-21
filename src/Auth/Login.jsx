@@ -34,10 +34,12 @@ const Login = () => {
         email: values.email,
         password: values.password,
       }).unwrap();
-
+      
       if (payload?.success) {
         dispatch(setToken(payload?.data?.accessToken));
         message.success("Login successful!");
+
+        // console.log("Login payload:", payload);
 
         // ✅ Handle Remember Me
         if (values.remember) {

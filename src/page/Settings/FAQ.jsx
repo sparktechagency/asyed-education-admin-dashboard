@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { message, Modal } from "antd";
 import { FaRegQuestionCircle } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
 import { Navigate } from "../../Navigate";
+import { useCreateFAQMutation, useDeleteFaqMutation, useGetAllFaqQuery, useUpdateFaqMutation } from "../redux/api/faqApi";
 
 const FAQ = () => {
+
+  const { data: faqData, isLoading } = useGetAllFaqQuery();
+
+  const [createFAQ] = useCreateFAQMutation();
+  const [updateFaq] = useUpdateFaqMutation();
+   const [deleteFaq] = useDeleteFaqMutation();
+  console.log("FAQ Data:", faqData?.data);
+
   const [isAccordionOpen, setIsAccordionOpen] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -15,80 +24,103 @@ const FAQ = () => {
   const [answer, setAnswer] = useState("");
 
   // Dummy data
-  const [faqs, setFaqs] = useState([
-    {
-      _id: "1",
-      question: "What is your return policy?",
-      answer: "We offer a 30-day return policy for all products. Items must be returned in their original condition with all tags attached. Please contact our support team to initiate a return request."
-    },
-    {
-      _id: "2", 
-      question: "How long does shipping take?",
-      answer: "Standard shipping takes 3-7 business days within the continental US. Expedited shipping options are available at checkout. International shipping times vary by destination country."
-    },
-    {
-      _id: "3",
-      question: "Do you offer international shipping?",
-      answer: "Yes, we ship to most countries worldwide. Please note that import duties, taxes, and shipping fees may apply. Check our shipping policy page for specific countries and rates."
-    },
-    {
-      _id: "4",
-      question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards (Visa, MasterCard, American Express, Discover), PayPal, Apple Pay, and Google Pay. All transactions are securely processed through our payment gateway."
-    },
-    {
-      _id: "5",
-      question: "How can I track my order?",
-      answer: "Once your order ships, you'll receive a tracking number via email. You can also track your order status in your account dashboard under 'My Orders' section."
-    }
-  ]);
+  const [faqs, setFaqs] = useState([]);
+  useEffect(() => {
+  if (faqData?.data) {
+    setFaqs(faqData.data);
+  }
+}, [faqData]);
 
   // Accordion click
   const handleClick = (index) => {
     setIsAccordionOpen((prevIndex) => (prevIndex === index ? null : index));
   };
 
-  // Add FAQ
-  const handleAddFaq = () => {
-    if (!question || !answer) return message.warning("Please fill all fields");
-    
-    const newFaq = {
-      _id: Date.now().toString(),
+  // create FaQ function.
+  const handleAddFaq = async () => {
+  if (!question || !answer) {
+    return message.warning("Please fill all fields");
+  }
+
+  try {
+    const payload = {
       question,
-      answer
+      answer,
     };
-    
-    setFaqs(prev => [...prev, newFaq]);
+
+   const result = await createFAQ(payload).unwrap();
+   console.log("Create FAQ Result:", result);
+
     message.success("FAQ added successfully");
+
     setAddModalOpen(false);
     setQuestion("");
     setAnswer("");
-  };
 
-  // Update FAQ
-  const handleUpdateFaq = () => {
-    if (!question || !answer) return message.warning("Please fill all fields");
-    
-    setFaqs(prev => prev.map(faq => 
-      faq._id === selectedFaq._id 
-        ? { ...faq, question, answer }
-        : faq
-    ));
-    
+  } catch (error) {
+    console.error(error);
+    message.error(
+      error?.data?.message || "Failed to add FAQ"
+    );
+  }
+};
+
+// upodate faq function
+const handleUpdateFaq = async () => {
+  if (!question || !answer) {
+    return message.warning("Please fill all fields");
+  }
+
+  try {
+   const result = await updateFaq({
+      id: selectedFaq._id,   
+      question,              
+      answer,
+    }).unwrap();
+
+    console.log("Update FAQ Result:", result);
+
     message.success("FAQ updated successfully");
+
     setUpdateModalOpen(false);
     setSelectedFaq(null);
     setQuestion("");
     setAnswer("");
-  };
 
-  // Delete FAQ
-  const handleDeleteFaq = () => {
-    setFaqs(prev => prev.filter(faq => faq._id !== selectedFaq._id));
+  } catch (error) {
+    console.error(error);
+    message.error(
+      error?.data?.message || "Failed to update FAQ"
+    );
+  }
+};
+
+ // Delete FAQ
+const handleDeleteFaq = async () => {
+  if (!selectedFaq?._id) {
+    return message.error("No FAQ selected");
+  }
+
+  try {
+    await deleteFaq(selectedFaq._id).unwrap();
+
     message.success("FAQ deleted successfully");
+
     setDeleteModalOpen(false);
     setSelectedFaq(null);
-  };
+
+  } catch (error) {
+    console.error(error);
+    message.error(
+      error?.data?.message || "Failed to delete FAQ"
+    );
+  }
+};
+
+
+  if(isLoading){
+    return <div className="min-h-screen flex flex-col items-center justify-center text-2xl font-semibold">Loading....</div>
+  }
 
   return (
     <div className="relative bg-white p-3 h-[87vh]">
