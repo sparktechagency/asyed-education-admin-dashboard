@@ -44,7 +44,6 @@ const AddVideo = ({ openAddModal, setOpenAddModal, setVideos }) => {
       if (response?.success) {
         message.success(response?.message || "Video added successfully!");
         form.resetFields();
-        // setContent("");
         setFileList([]);
         setOpenAddModal(false);
       } else {

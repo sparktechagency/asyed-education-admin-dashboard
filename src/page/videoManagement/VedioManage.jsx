@@ -24,7 +24,6 @@ const VideoManage = () => {
 
    useEffect(() => {
       if (videosData?.data) {
-        console.log("Setting videos from fetched data", videosData?.data);
         setVideos(videosData?.data);
       }
     }, [videosData]);

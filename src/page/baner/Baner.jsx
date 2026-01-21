@@ -1,38 +1,37 @@
 import { Input, message, Pagination, Table } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 import { Navigate } from "../../Navigate";
 import { SearchOutlined } from "@ant-design/icons";
 import AddBaner from "./AddBaner";
+import {  useDeleteBannerMutation, useGetAllBannersQuery } from "../redux/api/bannerApi";
 
 const Baner = () => {
+
+  const { data: bannersData, isLoading } = useGetAllBannersQuery();
+  const [deleteBanner] = useDeleteBannerMutation();
+ 
+
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  const [videos, setVideos] = useState([
-    {
-      _id: "1",
-      title: "React Tutorial",
-      description: "Learn React step by step",
-      videoUrl: "https://sample-videos.com/video123/mp4/240/big_buck_bunny_240p_1mb.mp4"
-    },
-    {
-      _id: "2",
-      title: "Node.js Basics",
-      description: "Introduction to Node.js",
-      videoUrl: "https://sample-videos.com/video123/mp4/240/big_buck_bunny_240p_1mb.mp4"
-    },
-  ]);
+  const [videos, setVideos] = useState([]);
 
   const [openAddModal, setOpenAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const isLoading = false;
+   useEffect(() => {
+        if (bannersData?.data) {
+          console.log("Banner Data", bannersData?.data);
+          setVideos(bannersData?.data);
+        }
+      }, [bannersData]);
 
-  // Filter videos based on search
+
   const filteredVideos = videos.filter((video) =>
     video.title.toLowerCase().includes(search.toLowerCase())
   );
@@ -45,10 +44,44 @@ const Baner = () => {
 
   const handlePageChange = (page) => setCurrentPage(page);
 
-  const handleDeleteVideo = (id) => {
-    setVideos((prev) => prev.filter((v) => v._id !== id));
-    message.success("Video deleted successfully");
-  };
+
+
+     const handleDeleteVideo = async (id) => {
+    
+  if (!id) {
+    return message.error("No Video selected");
+  }
+
+  try {
+    setLoading(true);
+
+
+    const response = await deleteBanner(id).unwrap();
+    console.log("Delete Banner response:", response);
+
+    if (response?.success) {
+      
+      setVideos((prev) => prev.filter((vid) => vid._id !== id));
+      message.success(response?.message || "Banner deleted successfully");
+    } else {
+      message.error(response?.message || "Failed to delete Banner");
+    }
+    
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "Failed to delete Banner");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+
+  // const handleDeleteVideo = (id) => {
+  //   setVideos((prev) => prev.filter((v) => v._id !== id));
+  //   message.success("Video deleted successfully");
+  // };
 
   const handleEdit = (record) => {
     setSelectedVideo(record);

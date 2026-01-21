@@ -1,7 +1,11 @@
 import { Form, Input, message, Modal, Spin, Upload } from "antd";
 import React, { useState } from "react";
+import { useAddBannerMutation } from "../redux/api/bannerApi";
 
 const AddBaner = ({ openAddModal, setOpenAddModal }) => {
+
+  const [addBanner, { isLoading }] = useAddBannerMutation();
+
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,14 +20,52 @@ const AddBaner = ({ openAddModal, setOpenAddModal }) => {
     setOpenAddModal(false);
   };
 
-  const handleSubmit = async (values) => {
-    // Placeholder: values.title, values.description, fileList[0] (video file)
-    console.log("Submitted values:", values, fileList);
-    message.success("Video added successfully!");
-    form.resetFields();
-    setFileList([]);
-    setOpenAddModal(false);
-  };
+
+const handleSubmit = async (values) => {
+  if (!values.title || values.title.length < 3) {
+    return message.error("Title must be at least 3 characters!");
+  }
+
+  if (!fileList.length || !fileList[0]?.originFileObj) {
+    return message.info("Select a Video!");
+  }
+
+  setLoading(true);
+
+  try {
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("file", fileList[0].originFileObj);
+
+    const response = await addBanner(formData).unwrap();
+
+    if (response?.success) {
+      message.success(response?.message || "Banner added successfully!");
+      form.resetFields();
+      setFileList([]);
+      setOpenAddModal(false);
+    } else {
+      message.error(response?.message || "Failed to add banner");
+    }
+
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "Failed to add banner");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+  // const handleSubmit = async (values) => {
+  //   // Placeholder: values.title, values.description, fileList[0] (video file)
+  //   console.log("Submitted values:", values, fileList);
+  //   message.success("Video added successfully!");
+  //   form.resetFields();
+  //   setFileList([]);
+  //   setOpenAddModal(false);
+  // };
 
   const onPreview = async (file) => {
     let src = file.url;
@@ -78,6 +120,7 @@ const AddBaner = ({ openAddModal, setOpenAddModal }) => {
                 onChange={onChange}
                 onPreview={onPreview}
                 maxCount={1}
+                beforeUpload={()=>false}
                 accept="video/*"
               >
                 {fileList.length < 1 && (
