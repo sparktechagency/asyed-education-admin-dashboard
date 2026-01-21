@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+.raw-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+
+.children-menu {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
+
+
+
+
+
+select option {
+  background-color: #EDC4C5;
+
+}
+
+
+
+
+
+/* Remove all borders from the Ant Design Table */
+.ant-table {
+  border: none !important;
+}
+
+.ant-table-container {
+  border: none !important;
+}
+
+.ant-table-thead > tr > th {
+  border: none !important;
+  background: #E0FFFF; 
+}
+
+
+.ant-table-tbody > tr > td {
+  border: none !important;
+}
+
+.ant-pagination {
+  border: none !important;
+}
+
+
+
+
+
+/* Pagination buttons style */
+.ant-pagination-item {
+  border-radius: 50% !important; /* Make buttons circular */
+}
+
+/* Active pagination button */
+.ant-pagination-item-active {
+  background-color: #004F44 !important; /* Active background color */
+  border-color: #004F44 !important;    /* Active border color */
+}
+
+/* Active pagination button text */
+.ant-pagination-item-active > a {
+  color: white !important; /* Ensure active text color is white */
+}
+
+/* Hover effect for buttons */
+
+
+
+/* In your CSS file or inside a styled-components if you're using them */
+.no-border-radius-modal .ant-modal {
+  border-radius: 0 !important;
+}
+
+
+
+
+/* :where(.css-dev-only-do-not-override-49qm)[class^="ant-checkbox"] [class^="ant-checkbox"], :where(.css-dev-only-do-not-override-49qm)[class*=" ant-checkbox"] [class^="ant-checkbox"], :where(.css-dev-only-do-not-override-49qm)[class^="ant-checkbox"] [class*=" ant-checkbox"], :where(.css-dev-only-do-not-override-49qm)[class*=" ant-checkbox"] [class*=" ant-checkbox"] {
+    box-sizing: border-box;
+    background-color: #D9000A;
+} */
+
+:where(.css-dev-only-do-not-override-49qm).ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+
+
+:where(.css-dev-only-do-not-override-49qm).ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #ff3916;
+  
+}
+
+
+
+
+.custom-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: red !important;
+}
+
+.custom-tabs .ant-tabs-ink-bar {
+  background-color: red !important; 
+}
+
+
+.custom-tabs .ant-tabs-tab:hover {
+  color: inherit !important; 
+}
+
+.custom-tabs .ant-tabs-tab-btn:hover {
+  color: inherit !important;
+}
+
+
+.custom-tabs .ant-tabs-tab {
+  border-bottom: none !important;
+}
+
+.custom-tabs .ant-tabs-tab-active {
+  border-bottom: 2px solid red !important; 
+}
+
+
+
+.custom-table .ant-table-thead > tr > th {
+  background-color: #e0fff3; /* slate-800 */
+  color: black;
+  font-weight: 600;
+  padding: 15px;
+}
