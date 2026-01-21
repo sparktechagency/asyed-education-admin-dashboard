@@ -1,39 +1,39 @@
 import { Input, message, Pagination, Table } from "antd";
-import { useState } from "react";
-import { MdOutlineModeEdit } from "react-icons/md";
+import { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 import { Navigate } from "../../Navigate";
 import { SearchOutlined } from "@ant-design/icons";
 import AddVideo from "./AddVideo";
+import { useDeleteVideoMutation, useGetAllVideosQuery } from "../redux/api/videoApi";
+
 
 const VideoManage = () => {
+
+  const { data: videosData, isLoading } = useGetAllVideosQuery();
+   const [deleteVideo, { isLoading: isDeleting }] = useDeleteVideoMutation();
+
+  console.log("Fetched videos data:", videosData?.data);
+
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const pageSize = 10;
 
-  const [videos, setVideos] = useState([
-    {
-      _id: "1",
-      title: "React Tutorial",
-      description: "Learn React step by step",
-      videoUrl:
-        "https://sample-videos.com/video123/mp4/240/big_buck_bunny_240p_1mb.mp4",
-    },
-    {
-      _id: "2",
-      title: "Node.js Basics",
-      description: "Introduction to Node.js",
-      videoUrl:
-        "https://sample-videos.com/video123/mp4/240/big_buck_bunny_240p_1mb.mp4",
-    },
-  ]);
+  const [videos, setVideos] = useState([])
+
+   useEffect(() => {
+      if (videosData?.data) {
+        console.log("Setting videos from fetched data", videosData?.data);
+        setVideos(videosData?.data);
+      }
+    }, [videosData]);
 
   const [openAddModal, setOpenAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
 
-  const isLoading = false;
+  // const isLoading = false;
 
   // Filter videos based on search
   const filteredVideos = videos.filter((video) =>
@@ -48,10 +48,41 @@ const VideoManage = () => {
 
   const handlePageChange = (page) => setCurrentPage(page);
 
-  const handleDeleteVideo = (id) => {
-    setVideos((prev) => prev.filter((v) => v._id !== id));
-    message.success("Video deleted successfully");
-  };
+
+   const handleDeleteVideo = async (id) => {
+    
+  if (!id) {
+    return message.error("No Video selected");
+  }
+
+  try {
+    setLoading(true);
+
+
+    const response = await deleteVideo(id).unwrap();
+    console.log("Delete Video response:", response);
+
+    if (response?.success) {
+      
+      setVideos((prev) => prev.filter((vid) => vid._id !== id));
+      message.success(response?.message || "Video deleted successfully");
+    } else {
+      message.error(response?.message || "Failed to delete Video");
+    }
+    
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "Failed to delete Video");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  // const handleDeleteVideo = (id) => {
+  //   setVideos((prev) => prev.filter((v) => v._id !== id));
+  //   message.success("Video deleted successfully");
+  // };
 
   const handleEdit = (record) => {
     setSelectedVideo(record);
@@ -151,7 +182,7 @@ const VideoManage = () => {
         />
       </div>
 
-      <AddVideo openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} />
+      <AddVideo openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} setVideos={setVideos}/>
     </div>
   );
 };

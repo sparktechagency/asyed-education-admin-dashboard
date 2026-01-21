@@ -1,5 +1,6 @@
 import { baseApi } from "./baseApi";
 
+
 const blogApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
@@ -17,46 +18,46 @@ const blogApi = baseApi.injectEndpoints({
   //           },
   //           providesTags: ['Blogs'],
   //       }),
-    getAllBlogs: builder.query({
+    getAllVideos: builder.query({
       query: () => {
         return {
-          url: `/blog`,
+          url: `/video`,
           method: "GET",
         };
       },
-      providesTags: ['Blogs'],
+      providesTags: ['Videos'],
     }),
 
-    addBlogs: builder.mutation({
+    addVideos: builder.mutation({
       query: (data) => {
         return {
-          url: "/blog",
+          url: "/video",
           method: "POST",
           body: data,
         };
       },
-      invalidatesTags: ["Blogs"],
+      invalidatesTags: ["Videos"],
     }),
 
-    updateBlog: builder.mutation({
-      query: ({ data, id }) => {
-        return {
-          url: `/blog/${id}`,
-          method: "PATCH",
-          body: data,
-        };
-      },
-      invalidatesTags: ["Blogs"],
-    }),
+    // updateVideo: builder.mutation({
+    //   query: ({ data, id }) => {
+    //     return {
+    //       url: `/video/${id}`,
+    //       method: "PATCH",
+    //       body: data,
+    //     };
+    //   },
+    //   invalidatesTags: ["Videos"],
+    // }),
 
-    deleteBlog: builder.mutation({
+    deleteVideo: builder.mutation({
       query: (id) => {
         return {
-          url: `/blog/${id}`,
+          url: `/video/${id}`,
           method: "DELETE",
         };
       },
-      invalidatesTags: ["Blogs"],
+      invalidatesTags: ["Videos"],
     }),
 
   
@@ -64,8 +65,7 @@ const blogApi = baseApi.injectEndpoints({
 });
 
 export const { 
-  useGetAllBlogsQuery, 
-  useAddBlogsMutation, 
-  useUpdateBlogMutation, 
-  useDeleteBlogMutation 
+    useGetAllVideosQuery,
+    useAddVideosMutation,
+    useDeleteVideoMutation 
 } = blogApi;

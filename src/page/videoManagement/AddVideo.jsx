@@ -1,10 +1,12 @@
 import { Form, Input, message, Modal, Spin, Upload } from "antd";
-import React, { useState } from "react";
+import  { useState } from "react";
+import { useAddVideosMutation } from "../redux/api/videoApi";
 
-const AddVideo = ({ openAddModal, setOpenAddModal }) => {
+const AddVideo = ({ openAddModal, setOpenAddModal, setVideos }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
+    const [addVideo, {isLoading}] = useAddVideosMutation();
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -16,14 +18,56 @@ const AddVideo = ({ openAddModal, setOpenAddModal }) => {
     setOpenAddModal(false);
   };
 
-  const handleSubmit = async (values) => {
-    // Placeholder: values.title, values.description, fileList[0] (video file)
-    console.log("Submitted values:", values, fileList);
-    message.success("Video added successfully!");
-    form.resetFields();
-    setFileList([]);
-    setOpenAddModal(false);
+    const handleSubmit = async (values) => {
+    
+  
+    if (!values.title || values.title.length < 3) {
+      return message.error("Title must be at least 3 characters!");
+    }
+  
+    if (!fileList[0]) {
+      return message.error("Please select a video!");
+    }
+  
+    setLoading(true);
+  
+    try {
+      
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("file", fileList[0].originFileObj); 
+
+      const response = await addVideo(formData).unwrap();
+      console.log("Add video response:", response);
+
+      if (response?.success) {
+        message.success(response?.message || "Video added successfully!");
+        form.resetFields();
+        // setContent("");
+        setFileList([]);
+        setOpenAddModal(false);
+      } else {
+        message.error(response?.message || "Failed to add video");
+      }
+  
+    } catch (error) {
+      console.error(error);
+      message.error(error?.data?.message || "Failed to add video");
+    } finally {
+      setLoading(false);
+    }
   };
+
+
+  // const handleSubmit = async (values) => {
+  //   // Placeholder: values.title, values.description, fileList[0] (video file)
+  //   console.log("Submitted values:", values, fileList);
+  //   message.success("Video added successfully!");
+  //   form.resetFields();
+  //   setFileList([]);
+  //   setOpenAddModal(false);
+  // };
 
   const onPreview = async (file) => {
     let src = file.url;
