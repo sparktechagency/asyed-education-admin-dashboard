@@ -27,6 +27,7 @@ import Baner from "../page/baner/Baner";
 import ChildManagement from "../page/child/ChildManagement";
 import AdminManagement from "../page/adminMake/AdminManagement";
 import BlogManagement from "../page/blog/BlogManagement";
+import SubjectManage from "../page/subject/SubjectManage";
 
 
 export const router = createBrowserRouter([
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/childManagement",
         element: <ChildManagement></ChildManagement>,
+      },
+      {
+        path: "/dashboard/subjectManagement",
+        element: <SubjectManage></SubjectManage>,
       },
        {
         path: "/dashboard/consultManagement",

@@ -1,62 +1,76 @@
-import { Form, Input, message, Modal, Select, TimePicker, Button, Space, Tag } from "antd";
-import React, { useState } from "react";
-import { useAddTutorsMutation } from "../redux/api/parantsApi";
+import { Form, Input, message, Modal, Select, TimePicker, Space } from "antd";
+import React, { useEffect, useState } from "react";
+import { useUpdateTutorMutation } from "../redux/api/parantsApi";
 import { useGetAllSubjectQuery } from "../redux/api/subjectApi";
 import dayjs from "dayjs";
 
 const { Option } = Select;
 
-const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
+const UpdateTutor = ({ editModal, setEditModal, selectedTutor, refetchTutors }) => {
   const [form] = Form.useForm();
   const { data: apiData } = useGetAllSubjectQuery();
   const subjects = apiData?.data || [];
+  const [updateTutor, { isLoading }] = useUpdateTutorMutation();
 
-  const [addTutors, { isLoading }] = useAddTutorsMutation();
   const [availability, setAvailability] = useState({});
-
   const daysOfWeek = [
     "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
   ];
 
+  // Populate form and availability when modal opens
+  useEffect(() => {
+    if (editModal && selectedTutor) {
+      form.setFieldsValue({
+        firstName: selectedTutor.user.firstName,
+        lastName: selectedTutor.user.lastName,
+        email: selectedTutor.user.email,
+        subjects: selectedTutor.subjects.map((s) => s._id),
+        bio: selectedTutor.bio,
+        qualifications: selectedTutor.qualifications || [],
+      });
+
+      setAvailability(selectedTutor.availability || {});
+    }
+  }, [editModal, selectedTutor, form]);
+
   const handleCancel = () => {
     form.resetFields();
     setAvailability({});
-    setOpenAddModal(false);
+    setEditModal(false);
   };
 
   const handleSubmit = async (values) => {
-    const payload = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      password: values.password,
-      subjects: values.subjects,
-      bio: values.bio || "",
-      qualifications: values.qualifications || [],
-      availability,
-    };
-
     try {
-      const res = await addTutors(payload).unwrap();
-      message.success(res.message || "Tutor added successfully!");
+      const payload = {
+       
+        subjects: values.subjects,
+        bio: values.bio,
+        qualifications: values.qualifications || [],
+        availability,
+      };
+
+      const res = await updateTutor({ id: selectedTutor._id, data: payload }).unwrap();
+      message.success(res.message || "Tutor updated successfully!");
       handleCancel();
+
       if (refetchTutors) refetchTutors();
     } catch (error) {
       console.error(error);
-      message.error(error?.data?.message || "Failed to add tutor");
+      message.error(error?.data?.message || "Failed to update tutor");
     }
   };
 
   return (
     <Modal
       centered
-      open={openAddModal}
+      open={editModal}
       onCancel={handleCancel}
       footer={null}
       width={700}
+      destroyOnClose
     >
       <div className="mb-4 mt-4">
-        <div className="font-bold text-center mb-6 text-lg">+ Add Tutor</div>
+        <div className="font-bold text-center mb-6 text-lg">Edit Tutor</div>
 
         <Form form={form} layout="vertical" onFinish={handleSubmit} className="px-2">
           <Form.Item
@@ -64,7 +78,7 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
             name="firstName"
             rules={[{ required: true, message: "Please enter first name!" }]}
           >
-            <Input placeholder="First Name" style={{ height: "40px" }} />
+            <Input disabled placeholder="First Name" style={{ height: "40px" }} />
           </Form.Item>
 
           <Form.Item
@@ -72,26 +86,14 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
             name="lastName"
             rules={[{ required: true, message: "Please enter last name!" }]}
           >
-            <Input placeholder="Last Name" style={{ height: "40px" }} />
+            <Input disabled placeholder="Last Name" style={{ height: "40px" }} />
           </Form.Item>
 
           <Form.Item
             label="Email"
             name="email"
-            rules={[
-              { required: true, message: "Please enter email!" },
-              { type: "email", message: "Enter a valid email!" },
-            ]}
           >
-            <Input placeholder="Email" style={{ height: "40px" }} />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Please enter password!" }]}
-          >
-            <Input.Password placeholder="Password" style={{ height: "40px" }} />
+            <Input disabled style={{ height: "40px", backgroundColor: "#f5f5f5" }} />
           </Form.Item>
 
           <Form.Item
@@ -116,16 +118,15 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
             <Input.TextArea placeholder="Bio" rows={3} />
           </Form.Item>
 
-          {/* User-friendly Qualifications */}
           <Form.Item
             label="Qualifications"
             name="qualifications"
-            tooltip="Type each qualification and press Enter. You can remove any by clicking the x."
+            tooltip="Type each qualification and press Enter. Remove any by clicking x."
           >
             <Select
               mode="tags"
               style={{ width: "100%" }}
-              placeholder="Add qualifications (Press Enter after each)"
+              placeholder="Add qualifications"
             />
           </Form.Item>
 
@@ -134,12 +135,15 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
               <div key={day} className="mb-2">
                 <strong className="capitalize">{day}:</strong>
                 <Space className="ml-2">
-                 <TimePicker.RangePicker
+                  <TimePicker.RangePicker
   format="HH:mm"
   value={
     availability[day]
-      ? [dayjs(availability[day][0], "HH:mm"), dayjs(availability[day][1], "HH:mm")]
-      : null
+      ? [
+          dayjs(availability[day][0], "HH:mm"),
+          dayjs(availability[day][1], "HH:mm"),
+        ]
+      : undefined // <-- use undefined instead of null
   }
   onChange={(times) => {
     setAvailability((prev) => {
@@ -148,7 +152,7 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
         // Set times if selected
         updated[day] = [times[0].format("HH:mm"), times[1].format("HH:mm")];
       } else {
-        // Remove the day key if cleared
+        // Remove day key if cleared to prevent Invalid Date
         delete updated[day];
       }
       return updated;
@@ -164,7 +168,7 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
           <Form.Item>
             <button
               type="submit"
-              disabled={ isLoading}
+              disabled={isLoading}
               className={`
                 w-full py-3 flex items-center justify-center gap-3
                 bg-green-700 text-white rounded
@@ -172,14 +176,7 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
                 transition-all font-medium
               `}
             >
-              { isLoading ? (
-                <>
-                  <span className="raw-spinner"></span>
-                  Adding...
-                </>
-              ) : (
-                "Continue"
-              )}
+              {isLoading ? "Updating..." : "Update Tutor"}
             </button>
           </Form.Item>
         </Form>
@@ -188,4 +185,4 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
   );
 };
 
-export default AddTutor;
+export default UpdateTutor;

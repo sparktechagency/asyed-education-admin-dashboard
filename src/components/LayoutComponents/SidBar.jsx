@@ -43,6 +43,12 @@ const items = [
     link: "/dashboard/tutorManagement"
   },
    {
+    key: "subjectManagement",
+    label: "Subject Management",
+    icon: <BiSolidInstitution />,
+    link: "/dashboard/subjectManagement"
+  },
+   {
     key: "childManagement",
     label: "Child Management",
     icon: <GrUserManager />,
@@ -60,6 +66,7 @@ const items = [
     icon: <BiSolidInstitution />,
     link: "/dashboard/tutionManagement"
   },
+ 
   {
     key: "adminManage",
     label: "Admin Management",

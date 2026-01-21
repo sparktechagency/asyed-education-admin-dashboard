@@ -6,12 +6,15 @@ import { Navigate } from "../../Navigate";
 import { useGetAllTutorsQuery } from "../redux/api/parantsApi";
 import AddTutor from "./AddTutor";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdOutlineModeEdit } from "react-icons/md";
+import UpdateTutor from "./UpdateTutor";
 const TutorManagement = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const limit = 10;
 const [openAddModal, setOpenAddModal] = useState(false);
-
+  const [editModal, setEditModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const { data, isLoading } = useGetAllTutorsQuery({
     search,
     page,
@@ -28,7 +31,10 @@ const [openAddModal, setOpenAddModal] = useState(false);
     setSelectedTutor(record);
     setIsModalOpen(true);
   };
-
+  const handleEdit = (record) => {
+    setSelectedCategory(record);
+    setEditModal(true);
+  };
   /* ================= TABLE COLUMNS ================= */
 
   const columns = [
@@ -62,6 +68,12 @@ const [openAddModal, setOpenAddModal] = useState(false);
       align: "center",
       render: (_, record) => (
      <div className="flex justify-center items-center gap-2">
+       <div
+                  onClick={() => handleEdit(record)}
+                  className="w-[36px] h-[36px] text-lg bg-[#007BFF] flex justify-center items-center text-white rounded cursor-pointer"
+                >
+                  <MdOutlineModeEdit />
+                </div>
       
        <BiBlock
           size={22}
@@ -122,55 +134,92 @@ const [openAddModal, setOpenAddModal] = useState(false);
       </div>
 
       {/* ================= MODAL ================= */}
-      <Modal
-        title="Tutor Details"
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-      >
-        {selectedTutor && (
-          <div className="space-y-3">
-            <h2 className="text-xl font-semibold">
-              {selectedTutor.user.firstName} {selectedTutor.user.lastName}
-            </h2>
+  {/* ================= MODAL ================= */}
+<Modal
+  title="Tutor Details"
+  open={isModalOpen}
+  onCancel={() => setIsModalOpen(false)}
+  footer={null}
+  width={600}
+  centered
+>
+  {selectedTutor && (
+    <div className="space-y-4">
+      {/* Tutor Basic Info */}
+      <div className="flex items-center gap-4">
+        <img
+          src={selectedTutor.user.profileImage || "https://i.ibb.co/1QbVGFw/teacher1.png"}
+          alt={`${selectedTutor.user.firstName} ${selectedTutor.user.lastName}`}
+          className="w-20 h-20 rounded-full object-cover"
+        />
+        <div>
+          <h2 className="text-2xl font-semibold">
+            {selectedTutor.user.firstName} {selectedTutor.user.lastName}
+          </h2>
+          <p className="text-gray-600">{selectedTutor.user.email}</p>
+          <Tag color={selectedTutor.user.isActive ? "green" : "red"} className="mt-1">
+            {selectedTutor.user.isActive ? "Active" : "Blocked"}
+          </Tag>
+        </div>
+      </div>
 
-            <p>
-              <strong>Email:</strong> {selectedTutor.user.email}
-            </p>
+      {/* Subjects */}
+      <div>
+        <h3 className="font-semibold mb-1">Subjects:</h3>
+        <div className="flex flex-wrap gap-2">
+          {selectedTutor.subjects.map((sub) => (
+            <Tag color="blue" key={sub._id}>
+              {sub.name}
+            </Tag>
+          ))}
+        </div>
+      </div>
 
-            <p>
-              <strong>Status:</strong>{" "}
-              <Tag color={selectedTutor.user.isActive ? "green" : "red"}>
-                {selectedTutor.user.isActive ? "Active" : "Blocked"}
+      {/* Bio */}
+      {selectedTutor.bio && (
+        <div>
+          <h3 className="font-semibold mb-1">Bio:</h3>
+          <p className="text-gray-700">{selectedTutor.bio}</p>
+        </div>
+      )}
+
+      {/* Qualifications */}
+      {selectedTutor.qualifications.length > 0 && (
+        <div>
+          <h3 className="font-semibold mb-1">Qualifications:</h3>
+          <div className="flex flex-wrap gap-2">
+            {selectedTutor.qualifications.map((q, i) => (
+              <Tag color="purple" key={i}>
+                {q}
               </Tag>
-            </p>
-
-            <p>
-              <strong>Bio:</strong> {selectedTutor.bio}
-            </p>
-
-            <p>
-              <strong>Qualifications:</strong>
-            </p>
-            <ul className="list-disc ml-5">
-              {selectedTutor.qualifications.map((q, i) => (
-                <li key={i}>{q}</li>
-              ))}
-            </ul>
-
-            <p className="font-semibold mt-3">Availability:</p>
-            {Object.entries(selectedTutor.availability).map(
-              ([day, times]) => (
-                <p key={day}>
-                  <strong className="capitalize">{day}:</strong>{" "}
-                  {times.join(", ")}
-                </p>
-              )
-            )}
+            ))}
           </div>
-        )}
-      </Modal>
+        </div>
+      )}
+
+      {/* Availability */}
+      {Object.keys(selectedTutor.availability).length > 0 && (
+        <div>
+          <h3 className="font-semibold mb-1">Availability:</h3>
+          <div className="grid grid-cols-2 gap-2">
+            {Object.entries(selectedTutor.availability).map(([day, times]) => (
+              <p key={day}>
+                <strong className="capitalize">{day}:</strong> {times.join(" - ")}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+</Modal>
+
       <AddTutor openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} />
+       <UpdateTutor
+        editModal={editModal}
+        setEditModal={setEditModal}
+        selectedTutor={selectedCategory}
+      />
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import { Form, Input, message, Modal, Spin, Upload, DatePicker, TimePicker, Select } from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import { useAddTutorsMutation } from "../redux/api/parantsApi";
+import { useGetAllSubjectQuery } from "../redux/api/subjectApi";
 
 const onPreview = async (file) => {
   let src = file.url;
@@ -18,9 +20,11 @@ const onPreview = async (file) => {
 };
 
 const AddTution = ({ openAddModal, setOpenAddModal }) => {
+
+  
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
-  const [loading, setLoading] = useState(false);
+
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -128,12 +132,25 @@ const AddTution = ({ openAddModal, setOpenAddModal }) => {
 
           {/* Submit Button */}
           <Form.Item>
-            <button
+          <button
               type="submit"
-              disabled={loading}
-              className="w-full py-2 mt-2 bg-[#004F44] text-white rounded-md flex justify-center items-center"
+              disabled={isLoading}
+              className={`
+                w-full py-3 flex items-center justify-center gap-3
+                bg-green-700 text-white rounded
+                hover:bg-green-800 disabled:bg-green-800/60
+                transition-all font-medium
+              `}
             >
-              {loading ? <Spin size="small" /> : "Add Tuition"}
+              {isLoading ? (
+                <>
+                  <span className="raw-spinner"></span>
+                  Signing in...
+                 
+                </>
+              ) : (
+                "Continue"
+              )}
             </button>
           </Form.Item>
 
