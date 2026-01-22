@@ -1,0 +1,198 @@
+import { Form, Input, message, Modal, Spin, Upload } from "antd";
+import { useEffect, useState } from "react";
+import { useUpdateVideoMutation } from "../redux/api/videoApi";
+
+const EditVideo = ({
+  editModal,
+  setEditModal,
+  selectedVideo,
+  setVideos,
+}) => {
+  const [form] = Form.useForm();
+  const [fileList, setFileList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  const [updateVideo] = useUpdateVideoMutation();
+
+  // Upload change
+  const onChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList.slice(-1)); // only keep latest file
+  };
+
+  // Set initial form values & preview when modal opens
+  useEffect(() => {
+    if (editModal && selectedVideo) {
+      form.setFieldsValue({
+        title: selectedVideo.title,
+        description: selectedVideo.description,
+      });
+
+      setFileList(
+        selectedVideo.videoUrl
+          ? [
+              {
+                uid: "-1",
+                name: "current-video.mp4",
+                status: "done",
+                url: selectedVideo.videoUrl,
+              },
+            ]
+          : []
+      );
+    }
+  }, [editModal, selectedVideo, form]);
+
+  // Generate preview URL
+  useEffect(() => {
+    if (fileList[0]?.originFileObj) {
+      const url = URL.createObjectURL(fileList[0].originFileObj);
+      setPreviewUrl(url);
+
+      return () => URL.revokeObjectURL(url); // clean up memory
+    } else if (fileList[0]?.url) {
+      setPreviewUrl(fileList[0].url);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [fileList]);
+
+  // Close modal
+  const handleCancel = () => {
+    form.resetFields();
+    setFileList([]);
+    setEditModal(false);
+  };
+
+  // Submit form
+  const handleSubmit = async (values) => {
+    if (!values.title || values.title.length < 3) {
+      return message.error("Title must be at least 3 characters!");
+    }
+
+    if (!values.description) {
+      return message.error("Description is required!");
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+
+      if (fileList[0]?.originFileObj) {
+        formData.append("file", fileList[0].originFileObj);
+      }
+
+      const response = await updateVideo({
+        id: selectedVideo._id,
+        data: formData,
+      }).unwrap();
+
+      console.log("Update video response:", response);
+
+      if (response?.success) {
+        message.success(response?.message || "Video updated successfully!");
+        handleCancel();
+      } else {
+        message.error(response?.message || "Failed to update video");
+      }
+    } catch (error) {
+      console.error(error);
+      message.error(error?.data?.message || "Failed to update video");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal
+      centered
+      open={editModal}
+      onCancel={handleCancel}
+      footer={null}
+      width={600}
+      destroyOnClose
+    >
+      <div className="mb-6 mt-4">
+        <div className="font-bold text-center mb-6 text-lg">Edit Video</div>
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          className="px-2"
+        >
+          {/* Title */}
+          <Form.Item
+            label="Title"
+            name="title"
+            rules={[{ required: true, message: "Please enter title!" }]}
+          >
+            <Input placeholder="Enter title" style={{ height: "40px" }} />
+          </Form.Item>
+
+          {/* Description */}
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: "Please enter description!" }]}
+          >
+            <Input.TextArea
+              placeholder="Enter description"
+              autoSize={{ minRows: 3, maxRows: 5 }}
+            />
+          </Form.Item>
+
+          {/* Video Preview + Upload */}
+          <Form.Item label="Video">
+            {/* Preview */}
+            {previewUrl && (
+              <video
+                width="100%"
+                height="240"
+                controls
+                style={{ marginBottom: "10px", borderRadius: "6px" }}
+                key={previewUrl} // force re-render on new video
+              >
+                <source src={previewUrl} type="video/mp4" />
+                Your browser does not support HTML5 video.
+              </video>
+            )}
+
+            {/* Upload */}
+            <Upload
+              fileList={fileList}
+              onChange={onChange}
+              maxCount={1}
+              accept="video/*"
+              beforeUpload={() => false} // prevent auto upload
+              showUploadList={false} // hide default list
+            >
+              <button
+                type="button"
+                className="bg-[#007BFF] text-white px-3 py-1 rounded"
+              >
+                {fileList.length ? "Change Video" : "Upload Video"}
+              </button>
+            </Upload>
+          </Form.Item>
+
+          {/* Submit */}
+          <Form.Item>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 mt-2 bg-[#004F44] text-white rounded-md flex justify-center items-center gap-2"
+            >
+              {loading ? <Spin size="small" /> : "Update Video"}
+            </button>
+          </Form.Item>
+        </Form>
+      </div>
+    </Modal>
+  );
+};
+
+export default EditVideo;

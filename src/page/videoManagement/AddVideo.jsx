@@ -26,7 +26,7 @@ const AddVideo = ({ openAddModal, setOpenAddModal, setVideos }) => {
     }
   
     if (!fileList[0]) {
-      return message.error("Please select a video!");
+      return message.info("Video must be under 10 mb!");
     }
   
     setLoading(true);

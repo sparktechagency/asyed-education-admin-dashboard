@@ -26,7 +26,7 @@ const Baner = () => {
 
    useEffect(() => {
         if (bannersData?.data) {
-          console.log("Banner Data", bannersData?.data);
+          // console.log("Banner Data", bannersData?.data);
           setVideos(bannersData?.data);
         }
       }, [bannersData]);
@@ -46,7 +46,7 @@ const Baner = () => {
 
 
 
-     const handleDeleteVideo = async (id) => {
+  const handleDeleteVideo = async (id) => {
     
   if (!id) {
     return message.error("No Video selected");
@@ -120,20 +120,21 @@ const Baner = () => {
       align: "right",
       render: (_, record) => (
         <div className="flex gap-2 justify-end">
-          
-          <div
-            // onClick={() => handleDeleteVideo(record._id)}
-            className="w-[36px] h-[36px] text-lg bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer"
-          >
-            <Popconfirm
+          <Popconfirm
             title="Are you sure to delete this Subject?"
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleDeleteVideo(record._id)}
           >
+          <div
+           
+            className="w-[36px] h-[36px] text-lg bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer"
+          >
+            
             <RiDeleteBin6Line />
-            </Popconfirm>
+           
           </div>
+           </Popconfirm>
         </div>
       ),
     },
