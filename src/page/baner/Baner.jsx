@@ -6,6 +6,8 @@ import { Navigate } from "../../Navigate";
 import { SearchOutlined } from "@ant-design/icons";
 import AddBaner from "./AddBaner";
 import {  useDeleteBannerMutation, useGetAllBannersQuery } from "../redux/api/bannerApi";
+import { MdOutlineModeEdit } from "react-icons/md";
+import EditBanner from "./EditBanner";
 
 const Baner = () => {
 
@@ -108,10 +110,12 @@ const Baner = () => {
       key: "video",
       align: "center",
       render: (url) => (
-        <video width="120" height="70" controls>
+        <div className="flex justify-center">
+          <video width="120" height="70" controls>
           <source src={url} type="video/mp4" />
           Your browser does not support HTML5 video.
         </video>
+        </div>
       ),
     },
     {
@@ -120,6 +124,13 @@ const Baner = () => {
       align: "right",
       render: (_, record) => (
         <div className="flex gap-2 justify-end">
+
+              <div
+                onClick={() => handleEdit(record)}
+                className="w-[36px] h-[36px] bg-[#007BFF] flex justify-center items-center text-white rounded cursor-pointer"
+                >
+                <MdOutlineModeEdit />
+              </div>
           <Popconfirm
             title="Are you sure to delete this Subject?"
             okText="Yes"
@@ -186,6 +197,15 @@ const Baner = () => {
       </div>
 
       <AddBaner openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} />
+
+
+       <EditBanner
+      setEditModal={setEditModal}
+      editModal={editModal}
+      selectedVideo={selectedVideo}
+      
+      />
+
     </div>
   );
 };

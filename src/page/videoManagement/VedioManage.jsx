@@ -116,10 +116,12 @@ const VideoManage = () => {
       key: "video",
       align: "center",
       render: (url) => (
-        <video width="120" height="70" controls>
+        <div className="flex justify-center">
+          <video width="120" height="70" controls>
           <source src={url} type="video/mp4" />
           Your browser does not support HTML5 video.
         </video>
+        </div>
       ),
     },
     {

@@ -27,7 +27,7 @@ const handleSubmit = async (values) => {
   }
 
   if (!fileList.length || !fileList[0]?.originFileObj) {
-    return message.info("Select a Video!");
+    return 
   }
 
   setLoading(true);

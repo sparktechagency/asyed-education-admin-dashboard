@@ -26,7 +26,7 @@ const AddVideo = ({ openAddModal, setOpenAddModal, setVideos }) => {
     }
   
     if (!fileList[0]) {
-      return message.info("Video must be under 10 mb!");
+      return 
     }
   
     setLoading(true);

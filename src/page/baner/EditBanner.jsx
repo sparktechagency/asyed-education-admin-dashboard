@@ -1,31 +1,25 @@
 import { Form, Input, message, Modal, Spin, Upload } from "antd";
 import { useEffect, useState } from "react";
-import { useUpdateVideoMutation } from "../redux/api/videoApi";
+import { useUpdateBannerMutation } from "../redux/api/bannerApi";
 
-const EditVideo = ({
-  editModal,
-  setEditModal,
-  selectedVideo,
-  setVideos,
-}) => {
+const EditBanner = ({ editModal, setEditModal, selectedVideo }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
 
-  const [updateVideo] = useUpdateVideoMutation();
+  const [updateBanner] = useUpdateBannerMutation();
 
-
+  // Handle file selection
   const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList.slice(-1));
+    setFileList(newFileList.slice(-1)); // only keep last file
   };
 
-
+  // Set initial values when modal opens
   useEffect(() => {
     if (editModal && selectedVideo) {
       form.setFieldsValue({
         title: selectedVideo.title,
-        description: selectedVideo.description,
       });
 
       setFileList(
@@ -33,7 +27,7 @@ const EditVideo = ({
           ? [
               {
                 uid: "-1",
-                name: "current-video.mp4",
+                name: "current-banner.mp4",
                 status: "done",
                 url: selectedVideo.videoUrl,
               },
@@ -43,12 +37,12 @@ const EditVideo = ({
     }
   }, [editModal, selectedVideo, form]);
 
+
   useEffect(() => {
     if (fileList[0]?.originFileObj) {
       const url = URL.createObjectURL(fileList[0].originFileObj);
       setPreviewUrl(url);
-
-      return () => URL.revokeObjectURL(url); 
+      return () => URL.revokeObjectURL(url);
     } else if (fileList[0]?.url) {
       setPreviewUrl(fileList[0].url);
     } else {
@@ -69,37 +63,31 @@ const EditVideo = ({
       return message.error("Title must be at least 3 characters!");
     }
 
-    if (!values.description) {
-      return message.error("Description is required!");
-    }
-
     setLoading(true);
-
     try {
       const formData = new FormData();
       formData.append("title", values.title);
-      formData.append("description", values.description);
 
       if (fileList[0]?.originFileObj) {
         formData.append("file", fileList[0].originFileObj);
       }
 
-      const response = await updateVideo({
+      const response = await updateBanner({
         id: selectedVideo._id,
         data: formData,
       }).unwrap();
 
-      console.log("Update video response:", response);
+      console.log("Update banner response:", response);
 
       if (response?.success) {
-        message.success(response?.message || "Video updated successfully!");
+        message.success(response?.message || "Banner updated successfully!");
         handleCancel();
       } else {
-        message.error(response?.message || "Failed to update video");
+        message.error(response?.message || "Failed to update banner");
       }
     } catch (error) {
       console.error(error);
-      message.error(error?.data?.message || "Failed to update video");
+      message.error(error?.data?.message || "Failed to update banner");
     } finally {
       setLoading(false);
     }
@@ -115,14 +103,9 @@ const EditVideo = ({
       destroyOnClose
     >
       <div className="mb-6 mt-4">
-        <div className="font-bold text-center mb-6 text-lg">Edit Video</div>
+        <div className="font-bold text-center mb-6 text-lg">Edit Banner</div>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          className="px-2"
-        >
+        <Form form={form} layout="vertical" onFinish={handleSubmit} className="px-2">
           {/* Title */}
           <Form.Item
             label="Title"
@@ -132,35 +115,21 @@ const EditVideo = ({
             <Input placeholder="Enter title" style={{ height: "40px" }} />
           </Form.Item>
 
-          {/* Description */}
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[{ required: true, message: "Please enter description!" }]}
-          >
-            <Input.TextArea
-              placeholder="Enter description"
-              autoSize={{ minRows: 3, maxRows: 5 }}
-            />
-          </Form.Item>
-
-      
+          {/* Video Preview + Upload */}
           <Form.Item label="Video">
-            
             {previewUrl && (
               <video
                 width="100%"
                 height="240"
                 controls
                 style={{ marginBottom: "10px", borderRadius: "6px" }}
-                key={previewUrl} 
+                key={previewUrl}
               >
                 <source src={previewUrl} type="video/mp4" />
                 Your browser does not support HTML5 video.
               </video>
             )}
 
-            {/* Upload */}
             <Upload
               fileList={fileList}
               onChange={onChange}
@@ -185,7 +154,7 @@ const EditVideo = ({
               disabled={loading}
               className="w-full py-2 mt-2 bg-[#004F44] text-white rounded-md flex justify-center items-center gap-2"
             >
-              {loading ? <Spin size="small" /> : "Update Video"}
+              {loading ? <Spin size="small" /> : "Update Banner"}
             </button>
           </Form.Item>
         </Form>
@@ -194,4 +163,4 @@ const EditVideo = ({
   );
 };
 
-export default EditVideo;
+export default EditBanner;
