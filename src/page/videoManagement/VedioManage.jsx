@@ -1,4 +1,4 @@
-import { Input, message, Pagination, Table } from "antd";
+import { Input, message, Pagination, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
@@ -126,10 +126,17 @@ const VideoManage = () => {
       render: (_, record) => (
         <div className="flex gap-2 justify-end">
           <div
-            onClick={() => handleDeleteVideo(record._id)}
+            // onClick={() => handleDeleteVideo(record._id)}
             className="w-[36px] h-[36px] text-lg bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer"
           >
+            <Popconfirm
+            title="Are you sure to delete this video?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleDeleteVideo(record._id)}
+          >
             <RiDeleteBin6Line />
+            </Popconfirm>
           </div>
         </div>
       ),

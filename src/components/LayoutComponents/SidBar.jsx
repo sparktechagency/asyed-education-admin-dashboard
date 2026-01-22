@@ -180,7 +180,7 @@ const SidBar = () => {
   };
 
   return (
-    <div className="custom-sidebar h-[100vh] bg-[#004F44] text-white">
+    <div className="custom-sidebar min-h-screen bg-[#004F44] text-white">
       <div className="custom-sidebar-logo flex justify-center pb-6 pt-4">
         <img src={logo} alt="Logo"  />
       </div>

@@ -1,4 +1,4 @@
-import { Input, message, Pagination, Table } from "antd";
+import { Input, message, Pagination, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -133,10 +133,17 @@ const BlogManagement = () => {
           <MdOutlineModeEdit />
         </div>
         <div
-          onClick={() => handleDeleteFaq(record._id)}
+          // onClick={() => handleDeleteFaq(record._id)}
           className="w-[36px] h-[36px] bg-[#E63946] flex justify-center items-center text-white rounded cursor-pointer"
         >
+          <Popconfirm
+            title="Are you sure to delete this Blog?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleDeleteFaq(record._id)}
+          >
           <RiDeleteBin6Line />
+          </Popconfirm>
         </div>
       </div>
     ),
