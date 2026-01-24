@@ -98,7 +98,12 @@ const items = [
     icon: <CiBoxes />,
     link: "/dashboard/bannerManagement"
   },
-
+ {
+    key: "support",
+    label: "Support",
+    icon: <CiBoxes />,
+    link: "/dashboard/support"
+  },
   
   {
     key: "settings",
