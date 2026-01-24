@@ -29,6 +29,7 @@ import AdminManagement from "../page/adminMake/AdminManagement";
 import BlogManagement from "../page/blog/BlogManagement";
 import SubjectManage from "../page/subject/SubjectManage";
 import PackageManagement from "../page/package/PackageManagement";
+import SupportTab from "../page/support/SupportTab";
 
 
 export const router = createBrowserRouter([
@@ -67,6 +68,10 @@ export const router = createBrowserRouter([
        {
         path: "/dashboard/packageManagement",
         element: <PackageManagement></PackageManagement>
+      },
+       {
+        path: "/dashboard/support",
+        element: <SupportTab></SupportTab>
       },
        {
         path: "/dashboard/consultManagement",

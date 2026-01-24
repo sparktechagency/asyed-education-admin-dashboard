@@ -113,7 +113,7 @@ const EditCategories = ({ editModal, setEditModal, selectedCategory }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2 mt-2 bg-[#E63946] text-white rounded-md"
+              className="w-full py-2 mt-2 bg-[#004F44] text-white rounded-md"
             >
               {loading ? <Spin size="small" /> : "Update"}
             </button>

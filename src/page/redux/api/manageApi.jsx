@@ -12,6 +12,16 @@ const manageApi = baseApi.injectEndpoints({
       providesTags: ["updateProfile"],
     }),
 
+    getClientContact: builder.query({
+      query: ({ page, limit }) => {
+        return {
+          url: `/contact/messages?page=${page}&limit=${limit}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+
     addFaq: builder.mutation({
       query: (data) => {
         return {
@@ -65,7 +75,37 @@ const manageApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["updateProfile"],
     }),
+ deleteContactClients: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/contact/messages/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
 
+
+getContact: builder.query({
+      query: () => {
+        return {
+          url: `/contact/business-info`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+
+  updateContact: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/contact/business-info`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
     updateBanners: builder.mutation({
       query: ({ data, id }) => {
         return {
@@ -89,4 +129,4 @@ const manageApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {} = manageApi;
+export const {useGetClientContactQuery, useDeleteContactClientsMutation, useGetContactQuery, useUpdateContactMutation} = manageApi;

@@ -93,7 +93,7 @@ const SubjectManage = () => {
           >
           <div
            
-            className="w-[36px] h-[36px] text-lg bg-[#E63946] flex justify-center items-center text-white rounded cursor-pointer"
+            className="w-[36px] h-[36px] text-lg bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer"
           >
             <RiDeleteBin6Line />
           </div></Popconfirm>

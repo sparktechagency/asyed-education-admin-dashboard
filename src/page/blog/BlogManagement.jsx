@@ -132,7 +132,7 @@ const BlogManagement = () => {
         </div>
         <div
           // onClick={() => handleDeleteFaq(record._id)}
-          className="w-[36px] h-[36px] bg-[#E63946] flex justify-center items-center text-white rounded cursor-pointer"
+          className="w-[36px] h-[36px] bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer"
         >
           <Popconfirm
             title="Are you sure to delete this Blog?"

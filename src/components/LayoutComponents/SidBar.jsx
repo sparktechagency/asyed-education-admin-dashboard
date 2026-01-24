@@ -36,42 +36,42 @@ const items = [
     icon: <FiUser/>,
     link: "/dashboard/parentsManagement"
   },
-  {
-    key: "tutorManagement",
-    label: "Tutor Management",
-    icon: <MdManageAccounts />,
-    link: "/dashboard/tutorManagement"
-  },
-   {
-    key: "subjectManagement",
-    label: "Subject",
-    icon: <BiSolidInstitution />,
-    link: "/dashboard/subjectManagement"
-  },
-   {
-    key: "childManagement",
-    label: "Child Management",
-    icon: <GrUserManager />,
-    link: "/dashboard/childManagement"
-  },
-   {
-    key: "packageManagement",
-    label: "Package Management",
-    icon: <GrUserManager />,
-    link: "/dashboard/packageManagement"
-  },
-  {
-    key: "conultManagement",
-    label: "Consult",
-    icon: <BsCameraVideo />,
-    link: "/dashboard/consultManagement"
-  },
-  {
-    key: "tutionManagement",
-    label: "Tution Management",
-    icon: <BiSolidInstitution />,
-    link: "/dashboard/tutionManagement"
-  },
+  // {
+  //   key: "tutorManagement",
+  //   label: "Tutor Management",
+  //   icon: <MdManageAccounts />,
+  //   link: "/dashboard/tutorManagement"
+  // },
+  //  {
+  //   key: "subjectManagement",
+  //   label: "Subject",
+  //   icon: <BiSolidInstitution />,
+  //   link: "/dashboard/subjectManagement"
+  // },
+  //  {
+  //   key: "childManagement",
+  //   label: "Child Management",
+  //   icon: <GrUserManager />,
+  //   link: "/dashboard/childManagement"
+  // },
+  //  {
+  //   key: "packageManagement",
+  //   label: "Package Management",
+  //   icon: <GrUserManager />,
+  //   link: "/dashboard/packageManagement"
+  // },
+  // {
+  //   key: "conultManagement",
+  //   label: "Consult",
+  //   icon: <BsCameraVideo />,
+  //   link: "/dashboard/consultManagement"
+  // },
+  // {
+  //   key: "tutionManagement",
+  //   label: "Tution Management",
+  //   icon: <BiSolidInstitution />,
+  //   link: "/dashboard/tutionManagement"
+  // },
  
   {
     key: "adminManage",

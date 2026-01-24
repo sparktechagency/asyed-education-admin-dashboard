@@ -112,7 +112,7 @@ const Categories = () => {
           </div>
           <div
             onClick={() => handleDeleteCategory(record._id)}
-            className="w-[36px] h-[36px] text-lg bg-[#E63946] flex justify-center items-center text-white rounded cursor-pointer"
+            className="w-[36px] h-[36px] text-lg bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer"
           >
             <RiDeleteBin6Line />
           </div>
@@ -139,7 +139,7 @@ const Categories = () => {
             {" "}
             <button
               onClick={() => setOpenAddModal(true)}
-              className="bg-[#E63946] w-[150px] text-white py-2 rounded"
+              className="bg-[#004F44] w-[150px] text-white py-2 rounded"
             >
               Add Category
             </button>
