@@ -26,7 +26,7 @@ const AddVideo = ({ openAddModal, setOpenAddModal, setVideos }) => {
     }
   
     if (!fileList[0]) {
-      return message.error("Please select a video!");
+      return 
     }
   
     setLoading(true);

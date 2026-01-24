@@ -39,16 +39,16 @@ const blogApi = baseApi.injectEndpoints({
       invalidatesTags: ["Videos"],
     }),
 
-    // updateVideo: builder.mutation({
-    //   query: ({ data, id }) => {
-    //     return {
-    //       url: `/video/${id}`,
-    //       method: "PATCH",
-    //       body: data,
-    //     };
-    //   },
-    //   invalidatesTags: ["Videos"],
-    // }),
+    updateVideo: builder.mutation({
+      query: ({ data, id }) => {
+        return {
+          url: `/video/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Videos"],
+    }),
 
     deleteVideo: builder.mutation({
       query: (id) => {
@@ -67,5 +67,6 @@ const blogApi = baseApi.injectEndpoints({
 export const { 
     useGetAllVideosQuery,
     useAddVideosMutation,
-    useDeleteVideoMutation 
+    useDeleteVideoMutation,
+    useUpdateVideoMutation
 } = blogApi;

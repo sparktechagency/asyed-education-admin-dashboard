@@ -6,6 +6,9 @@ import { Navigate } from "../../Navigate";
 import { SearchOutlined } from "@ant-design/icons";
 import AddVideo from "./AddVideo";
 import { useDeleteVideoMutation, useGetAllVideosQuery } from "../redux/api/videoApi";
+import { MdOutlineModeEdit } from "react-icons/md";
+import EditBlog from "../blog/EditBlog";
+import EditVideo from "./EditVideo";
 
 
 const VideoManage = () => {
@@ -113,10 +116,12 @@ const VideoManage = () => {
       key: "video",
       align: "center",
       render: (url) => (
-        <video width="120" height="70" controls>
+        <div className="flex justify-center">
+          <video width="120" height="70" controls>
           <source src={url} type="video/mp4" />
           Your browser does not support HTML5 video.
         </video>
+        </div>
       ),
     },
     {
@@ -125,19 +130,30 @@ const VideoManage = () => {
       align: "right",
       render: (_, record) => (
         <div className="flex gap-2 justify-end">
-          <div
-            // onClick={() => handleDeleteVideo(record._id)}
-            className="w-[36px] h-[36px] text-lg bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer"
-          >
-            <Popconfirm
+
+ 
+            <div
+                      onClick={() => handleEdit(record)}
+                      className="w-[36px] h-[36px] bg-[#007BFF] flex justify-center items-center text-white rounded cursor-pointer"
+                    >
+                      <MdOutlineModeEdit />
+                    </div>
+
+          <Popconfirm
             title="Are you sure to delete this video?"
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleDeleteVideo(record._id)}
           >
+          <div
+            
+            className="w-[36px] h-[36px] text-lg bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer"
+          >
+            
             <RiDeleteBin6Line />
-            </Popconfirm>
+           
           </div>
+           </Popconfirm>
         </div>
       ),
     },
@@ -189,6 +205,13 @@ const VideoManage = () => {
       </div>
 
       <AddVideo openAddModal={openAddModal} setOpenAddModal={setOpenAddModal} setVideos={setVideos}/>
+
+      <EditVideo
+      setEditModal={setEditModal}
+      editModal={editModal}
+      selectedVideo={selectedVideo}
+      setVideos={setVideos}
+      />
     </div>
   );
 };

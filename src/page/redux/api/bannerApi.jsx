@@ -40,16 +40,16 @@ const blogApi = baseApi.injectEndpoints({
       invalidatesTags: ["Banners"],
     }),
 
-    // updateBanner: builder.mutation({
-    //   query: ({ data, id }) => {
-    //     return {
-    //       url: `/banner/${id}`,
-    //       method: "PATCH",
-    //       body: data,
-    //     };
-    //   },
-    //   invalidatesTags: ["Banners"],
-    // }),
+      updateBanner: builder.mutation({
+      query: ({ data, id }) => {
+        return {
+          url: `/banners/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Banners"],
+    }),
 
     deleteBanner: builder.mutation({
       query: (id) => { 
@@ -68,5 +68,6 @@ const blogApi = baseApi.injectEndpoints({
 export const { 
     useGetAllBannersQuery,
     useAddBannerMutation,
+    useUpdateBannerMutation,
     useDeleteBannerMutation 
 } = blogApi;
