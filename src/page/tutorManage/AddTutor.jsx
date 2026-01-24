@@ -1,4 +1,14 @@
-import { Form, Input, message, Modal, Select, TimePicker, Button, Space, Tag } from "antd";
+import {
+  Form,
+  Input,
+  message,
+  Modal,
+  Select,
+  TimePicker,
+  Button,
+  Space,
+  Tag,
+} from "antd";
 import React, { useState } from "react";
 import { useAddTutorsMutation } from "../redux/api/parantsApi";
 import { useGetAllSubjectQuery } from "../redux/api/subjectApi";
@@ -15,7 +25,13 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
   const [availability, setAvailability] = useState({});
 
   const daysOfWeek = [
-    "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
   ];
 
   const handleCancel = () => {
@@ -58,7 +74,12 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
       <div className="mb-4 mt-4">
         <div className="font-bold text-center mb-6 text-lg">+ Add Tutor</div>
 
-        <Form form={form} layout="vertical" onFinish={handleSubmit} className="px-2">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          className="px-2"
+        >
           <Form.Item
             label="First Name"
             name="firstName"
@@ -97,7 +118,12 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
           <Form.Item
             label="Subjects"
             name="subjects"
-            rules={[{ required: true, message: "Please select at least one subject!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please select at least one subject!",
+              },
+            ]}
           >
             <Select
               mode="multiple"
@@ -134,28 +160,33 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
               <div key={day} className="mb-2">
                 <strong className="capitalize">{day}:</strong>
                 <Space className="ml-2">
-                 <TimePicker.RangePicker
-  format="HH:mm"
-  value={
-    availability[day]
-      ? [dayjs(availability[day][0], "HH:mm"), dayjs(availability[day][1], "HH:mm")]
-      : null
-  }
-  onChange={(times) => {
-    setAvailability((prev) => {
-      const updated = { ...prev };
-      if (times) {
-        // Set times if selected
-        updated[day] = [times[0].format("HH:mm"), times[1].format("HH:mm")];
-      } else {
-        // Remove the day key if cleared
-        delete updated[day];
-      }
-      return updated;
-    });
-  }}
-/>
-
+                  <TimePicker.RangePicker
+                    format="HH:mm"
+                    value={
+                      availability[day]
+                        ? [
+                            dayjs(availability[day][0], "HH:mm"),
+                            dayjs(availability[day][1], "HH:mm"),
+                          ]
+                        : null
+                    }
+                    onChange={(times) => {
+                      setAvailability((prev) => {
+                        const updated = { ...prev };
+                        if (times) {
+                          // Set times if selected
+                          updated[day] = [
+                            times[0].format("HH:mm"),
+                            times[1].format("HH:mm"),
+                          ];
+                        } else {
+                          // Remove the day key if cleared
+                          delete updated[day];
+                        }
+                        return updated;
+                      });
+                    }}
+                  />
                 </Space>
               </div>
             ))}
@@ -164,7 +195,7 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
           <Form.Item>
             <button
               type="submit"
-              disabled={ isLoading}
+              disabled={isLoading}
               className={`
                 w-full py-3 flex items-center justify-center gap-3
                 bg-green-700 text-white rounded
@@ -172,7 +203,7 @@ const AddTutor = ({ openAddModal, setOpenAddModal, refetchTutors }) => {
                 transition-all font-medium
               `}
             >
-              { isLoading ? (
+              {isLoading ? (
                 <>
                   <span className="raw-spinner"></span>
                   Adding...

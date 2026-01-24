@@ -20,6 +20,7 @@ const [openAddModal, setOpenAddModal] = useState(false);
     page,
     limit,
   });
+  console.log(data)
 
   const tutors = data?.data || [];
   const meta = data?.meta;

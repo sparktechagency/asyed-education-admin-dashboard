@@ -24,9 +24,7 @@ const BlogManagement = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   // const isLoading = false; 
-
-
-    useEffect(() => {
+ useEffect(() => {
     if (blogsData?.data?.items) {
       console.log("Setting blogs from fetched data", blogsData.data.items);
       setBlogs(blogsData.data.items);

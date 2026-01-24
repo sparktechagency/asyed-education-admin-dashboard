@@ -20,7 +20,7 @@ const useApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["updateProfile"],
+      providesTags: ["userProfile"],
     }),
     forgotPassword: builder.mutation({
       query: (email) => {
@@ -79,14 +79,7 @@ const useApi = baseApi.injectEndpoints({
       providesTags: ["host"],
     }),
 
-    blockUserHost: builder.mutation({
-      query: (data) => ({
-        url: `/dashboard/block-unblock-user`,
-        method: "PATCH",
-        body: data,
-      }),
-      invalidatesTags: ["host"], 
-    }),
+  
   }),
 });
 

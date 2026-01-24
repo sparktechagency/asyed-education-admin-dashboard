@@ -44,7 +44,7 @@ const items = [
   },
    {
     key: "subjectManagement",
-    label: "Subject Management",
+    label: "Subject",
     icon: <BiSolidInstitution />,
     link: "/dashboard/subjectManagement"
   },
@@ -54,9 +54,15 @@ const items = [
     icon: <GrUserManager />,
     link: "/dashboard/childManagement"
   },
+   {
+    key: "packageManagement",
+    label: "Package Management",
+    icon: <GrUserManager />,
+    link: "/dashboard/packageManagement"
+  },
   {
     key: "conultManagement",
-    label: "Consult Management",
+    label: "Consult",
     icon: <BsCameraVideo />,
     link: "/dashboard/consultManagement"
   },
@@ -75,13 +81,13 @@ const items = [
   },
    {
     key: "blogManagement",
-    label: "Blog Management",
+    label: "Blog",
     icon: <PiGitlabLogoLight />,
     link: "/dashboard/blogManagement"
   },
   {
     key: "videoCreatorManagement",
-    label: "Video Management",
+    label: "Video",
     icon: <MdOutlineOndemandVideo />,
     link: "/dashboard/videoCreatorManagement"
   },

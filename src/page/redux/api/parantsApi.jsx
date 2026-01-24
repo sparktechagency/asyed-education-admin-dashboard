@@ -15,7 +15,7 @@ const parantsApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["updateProfile"],
+      providesTags: ["parents"],
     }),
 
 
@@ -33,7 +33,7 @@ const parantsApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["updateProfile"],
+      providesTags: ["tutors"],
     }),
 
     addTutors: builder.mutation({
@@ -44,7 +44,7 @@ const parantsApi = baseApi.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["tutors"],
     }),
 
     updateTutor: builder.mutation({
@@ -55,7 +55,7 @@ const parantsApi = baseApi.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["tutors"],
     }),
 
     deleteTutor: builder.mutation({
@@ -65,9 +65,43 @@ const parantsApi = baseApi.injectEndpoints({
           method: "DELETE",
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["tutors"],
     }),
+
+
+
+ addPackage: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/packages",
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["tutors"],
+    }),
+getAllPackages: builder.query({
+      query: () => {
+        return {
+          url: `/packages`,
+          method: "GET",
+        };
+      },
+      providesTags: ["tutors"],
+    }),
+
+     deletePackages: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/packages/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["tutors"],
+    }),
+
+
   }),
 });
 
-export const { useGetAllParentsQuery, useAddTutorsMutation, useDeleteTutorMutation, useGetAllTutorsQuery, useUpdateTutorMutation } = parantsApi;
+export const { useGetAllParentsQuery, useAddTutorsMutation, useDeleteTutorMutation, useGetAllTutorsQuery, useUpdateTutorMutation , useAddPackageMutation, useGetAllPackagesQuery, useDeletePackagesMutation} = parantsApi;

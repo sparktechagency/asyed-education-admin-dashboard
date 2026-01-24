@@ -11,7 +11,7 @@ const subjectApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["updateProfile"],
+      providesTags: ["subject"],
     }),
 
     addSubject: builder.mutation({
@@ -22,7 +22,7 @@ const subjectApi = baseApi.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["subject"],
     }),
 
     updateSubject: builder.mutation({
@@ -33,7 +33,7 @@ const subjectApi = baseApi.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["subject"],
     }),
 
     deleteSubject: builder.mutation({
@@ -43,7 +43,7 @@ const subjectApi = baseApi.injectEndpoints({
           method: "DELETE",
         };
       },
-      invalidatesTags: ["updateProfile"],
+      invalidatesTags: ["subject"],
     }),
 
   

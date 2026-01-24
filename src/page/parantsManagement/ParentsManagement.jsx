@@ -15,8 +15,13 @@ import { AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
 import { GoLocation } from "react-icons/go";
 import { Navigate } from "../../Navigate";
 import { useGetAllParentsQuery } from "../redux/api/parantsApi";
+import { BsSendArrowUp } from "react-icons/bs";
+import AddPackage from "./AddPackage";
 
 const ParentsManagement = () => {
+  const [openAddModal, setOpenAddModal] = useState(false);
+  
+  const [selectedParants, setSelectedCategory] = useState(null);
   const [page, setPage] = useState(1);
 const [search, setSearch] = useState("");
   const [selectedParent, setSelectedParent] = useState(null);
@@ -27,7 +32,11 @@ const [search, setSearch] = useState("");
     limit,
     search,
   });
-
+  const handleEdit = (record) => {
+    console.log(record)
+    setSelectedCategory(record);
+    setOpenAddModal(true);
+  };
   const parents = data?.data || [];
   const meta = data?.meta;
 
@@ -77,8 +86,16 @@ const [search, setSearch] = useState("");
     },
     {
       title: "Action",
+      align: "end",
       render: (_, record) => (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-end gap-3">
+           <button
+         
+         onClick={() => handleEdit(record)}
+            className="bg-[#6d999327] border border-[#096e61] text-[#096e61]  px-3 py-1 rounded flex justify-center items-center gap-1 transition-all"
+          >
+            Package Request <BsSendArrowUp />
+          </button>
           <button
             onClick={() => setSelectedParent(record)}
             className="text-xl text-blue-600 hover:text-blue-800"
@@ -201,6 +218,7 @@ const [search, setSearch] = useState("");
           </div>
         )}
       </Modal>
+      <AddPackage selectedParants={selectedParants} openAddModal={openAddModal} setOpenAddModal={setOpenAddModal}/>
     </div>
   );
 };
