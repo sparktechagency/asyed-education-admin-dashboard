@@ -9,7 +9,7 @@ import AddBlog from "./AddBlog";
 import EditBlog from "./EditBlog";
 import { useDeleteBlogMutation, useGetAllBlogsQuery } from "../redux/api/blogApi";
 import { imageUrl } from "../redux/api/baseApi";
-
+//ads
 const BlogManagement = () => {
 
   const {data: blogsData, isLoading} = useGetAllBlogsQuery()
