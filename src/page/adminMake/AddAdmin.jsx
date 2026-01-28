@@ -1,11 +1,10 @@
-import { Form, Input, message, Modal, Spin, Select } from "antd";
-import React, { useState } from "react";
-
-const { Option } = Select;
+import { Form, Input, message, Modal } from "antd";
+import React from "react";
+import { useAddAdminMutation } from "../redux/api/adminApi";
 
 const AddAdmin = ({ openAddModal, setOpenAddModal }) => {
+  const [addAdmin, { isLoading }] = useAddAdminMutation();
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
 
   const handleCancel = () => {
     form.resetFields();
@@ -18,10 +17,27 @@ const AddAdmin = ({ openAddModal, setOpenAddModal }) => {
       return;
     }
 
-    console.log("Submitted values:", values);
-    message.success("Admin added successfully!");
-    form.resetFields();
-    setOpenAddModal(false);
+    try {
+      // Prepare the payload
+      const payload = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        password: values.password,
+      };
+
+      // Call the API
+           const res = await addAdmin(payload).unwrap();
+
+      message.success(res?.data?.message || "Admin added successfully!");
+      form.resetFields();
+      setOpenAddModal(false);
+    } catch (error) {
+      console.error(error);
+      message.error(
+        error?.data?.message || "Failed to add admin. Please try again."
+      );
+    }
   };
 
   return (
@@ -41,14 +57,25 @@ const AddAdmin = ({ openAddModal, setOpenAddModal }) => {
           onFinish={handleSubmit}
           className="px-2"
         >
+          {/* First Name */}
           <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please enter name!" }]}
+            label="First Name"
+            name="firstName"
+            rules={[{ required: true, message: "Please enter first name!" }]}
           >
-            <Input placeholder="Enter Name" style={{ height: "40px" }} />
+            <Input placeholder="Enter First Name" style={{ height: "40px" }} />
           </Form.Item>
 
+          {/* Last Name */}
+          <Form.Item
+            label="Last Name"
+            name="lastName"
+            rules={[{ required: true, message: "Please enter last name!" }]}
+          >
+            <Input placeholder="Enter Last Name" style={{ height: "40px" }} />
+          </Form.Item>
+
+          {/* Email */}
           <Form.Item
             label="Email"
             name="email"
@@ -60,42 +87,50 @@ const AddAdmin = ({ openAddModal, setOpenAddModal }) => {
             <Input placeholder="Enter Email" style={{ height: "40px" }} />
           </Form.Item>
 
+          {/* Password */}
           <Form.Item
             label="Password"
             name="password"
             rules={[{ required: true, message: "Please enter password!" }]}
           >
-            <Input.Password placeholder="Enter Password" style={{ height: "40px" }} />
+            <Input.Password
+              placeholder="Enter Password"
+              style={{ height: "40px" }}
+            />
           </Form.Item>
 
+          {/* Confirm Password */}
           <Form.Item
             label="Confirm Password"
             name="confirmPassword"
             rules={[{ required: true, message: "Please confirm password!" }]}
           >
-            <Input.Password placeholder="Confirm Password" style={{ height: "40px" }} />
-          </Form.Item>
-
-          <Form.Item
-            label="User Type"
-            name="userType"
-            rules={[{ required: true, message: "Please select user type!" }]}
-          >
-            <Select placeholder="Select User Type" style={{ height: "40px" }}>
-              <Option value="Super Admin">Super Admin</Option>
-              <Option value="Admin">Admin</Option>
-              <Option value="Moderator">Moderator</Option>
-            </Select>
+            <Input.Password
+              placeholder="Confirm Password"
+              style={{ height: "40px" }}
+            />
           </Form.Item>
 
           {/* Submit Button */}
           <Form.Item>
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-2 mt-2 bg-[#004F44] text-white rounded-md flex justify-center items-center gap-2"
+              disabled={isLoading}
+              className={`
+                w-full py-3 flex items-center justify-center gap-3
+                bg-green-700 text-white rounded
+                hover:bg-green-800 disabled:bg-green-800/60
+                transition-all font-medium
+              `}
             >
-              {loading ? <Spin size="small" /> : "Add Admin"}
+              {isLoading ? (
+                <>
+                  <span className="raw-spinner"></span>
+                  Adding...
+                </>
+              ) : (
+                "Continue"
+              )}
             </button>
           </Form.Item>
         </Form>

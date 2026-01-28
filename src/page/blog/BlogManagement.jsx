@@ -106,7 +106,7 @@ const BlogManagement = () => {
     align: "center",
     render: (_, record) => (
       <img
-        src={`${imageUrl}/${record?.image}`}
+        src={`${record?.image}`}
         alt={record.title}
         className="w-10 h-10 object-cover rounded mx-auto"
       />
