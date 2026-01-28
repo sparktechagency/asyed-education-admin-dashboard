@@ -23,14 +23,14 @@ const Testimonial = () => {
 
   useEffect(() => {
     if (testimonialData?.data) {
-      setTestimonials(testimonialData.data);
+      setTestimonials(Array.isArray(testimonialData.data) ? testimonialData.data : testimonialData.data.result || testimonialData.data.items || []);
     }
   }, [testimonialData]);
 
-  const filteredTestimonials = testimonials.filter((t) =>
+  const filteredTestimonials = Array.isArray(testimonials) ? testimonials.filter((t) =>
     t?.authorName?.toLowerCase().includes(search?.toLowerCase()) ||
     t?.quote?.toLowerCase().includes(search?.toLowerCase())
-  );
+  ) : [];
 
   const paginatedData = filteredTestimonials.slice(
     (currentPage - 1) * pageSize,

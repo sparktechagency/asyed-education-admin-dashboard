@@ -103,9 +103,9 @@ const AddTestimonial = ({ openAddModal, setOpenAddModal }) => {
                         <Input placeholder="Enter author title" style={{ height: "40px" }} />
                     </Form.Item>
 
-                    <Form.Item label="Active" name="isActive" valuePropName="checked">
+                    {/* <Form.Item label="Active" name="isActive" valuePropName="checked">
                         <Switch />
-                    </Form.Item>
+                    </Form.Item> */}
 
                     <Form.Item>
                         <button
