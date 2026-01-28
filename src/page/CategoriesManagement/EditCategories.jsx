@@ -25,7 +25,7 @@ const EditCategories = ({ editModal, setEditModal, selectedCategory }) => {
           uid: "-1",
           name: "category-image.png",
           status: "done",
-          url: `${imageUrl}${selectedCategory?.imageUrl}`,
+          url: `${selectedCategory?.imageUrl}`,
         },
       ]);
     }
