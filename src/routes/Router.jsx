@@ -30,6 +30,7 @@ import BlogManagement from "../page/blog/BlogManagement";
 import SubjectManage from "../page/subject/SubjectManage";
 import PackageManagement from "../page/package/PackageManagement";
 import SupportTab from "../page/support/SupportTab";
+import Testimonial from "../page/testimonial/Testimonial";
 
 
 export const router = createBrowserRouter([
@@ -113,6 +114,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/Settings/profile",
         element: <Profile></Profile>,
+      },
+      {
+        path: "/dashboard/Settings/testimonial",
+        element: <Testimonial></Testimonial>,
       },
       {
         path: "/dashboard/Settings/profile",

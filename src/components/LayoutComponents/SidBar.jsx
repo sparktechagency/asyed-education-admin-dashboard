@@ -127,6 +127,11 @@ const items = [
         link: "/dashboard/Settings/PrivacyPolicy"
       },
       {
+        key: "testimonial",
+        label: "Testimonial",
+        link: "/dashboard/Settings/testimonial"
+      },
+      {
         key: "faq",
         label: "FAQ",
         link: "/dashboard/Settings/FAQ"
