@@ -5,20 +5,20 @@ import { baseApi } from "./baseApi";
 const adminApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
-  //  getBlogs: builder.query({
-  //           query: (params) => {
-  //               const { search } = params || {};
-  //               const queryParams = new URLSearchParams();
-  //               if (search) queryParams.append('search', search);
-                
+    //  getBlogs: builder.query({
+    //           query: (params) => {
+    //               const { search } = params || {};
+    //               const queryParams = new URLSearchParams();
+    //               if (search) queryParams.append('search', search);
 
-  //               return {
-  //                   url: `/blog?${queryParams.toString()}`,
-  //                   method: 'GET',
-  //               };
-  //           },
-  //           providesTags: ['Blogs'],
-  //       }),
+
+    //               return {
+    //                   url: `/blog?${queryParams.toString()}`,
+    //                   method: 'GET',
+    //               };
+    //           },
+    //           providesTags: ['Blogs'],
+    //       }),
     // getAllBanners: builder.query({
     //   query: () => {
     //     return {
@@ -35,6 +35,27 @@ const adminApi = baseApi.injectEndpoints({
           url: "/users/admin",
           method: "POST",
           body: data,
+        };
+      },
+      invalidatesTags: ["admin"],
+    }),
+
+    getAdmins: builder.query({
+      query: (params) => {
+        return {
+          url: "/users?role=admin",
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["admin"],
+    }),
+
+    deleteAdmin: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/users/admin/${id}`,
+          method: "DELETE",
         };
       },
       invalidatesTags: ["admin"],
@@ -61,10 +82,12 @@ const adminApi = baseApi.injectEndpoints({
     //   invalidatesTags: ["Banners"],
     // }),
 
-  
+
   }),
 });
 
-export const { 
-   useAddAdminMutation
+export const {
+  useAddAdminMutation,
+  useGetAdminsQuery,
+  useDeleteAdminMutation
 } = adminApi;

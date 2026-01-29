@@ -1,19 +1,19 @@
 import { Form, Input, message, Modal, Spin, Upload } from "antd";
 import React, { useEffect, useState } from "react";
-// import { useUpdateCategoryMutation } from "../redux/api/categoryApi";
-import { imageUrl } from "../redux/api/baseApi";
+
+
 
 const EditCategories = ({ editModal, setEditModal, selectedCategory }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [updateCategory] = useUpdateCategoryMutation();
+ 
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
 
-  // ✅ Whenever modal opens, fill default data again
+
   useEffect(() => {
     if (editModal && selectedCategory) {
       form.setFieldsValue({
@@ -27,6 +27,7 @@ const EditCategories = ({ editModal, setEditModal, selectedCategory }) => {
           status: "done",
           url: `${selectedCategory?.imageUrl}`,
         },
+        
       ]);
     }
   }, [editModal, selectedCategory, form]);
@@ -79,7 +80,7 @@ const EditCategories = ({ editModal, setEditModal, selectedCategory }) => {
       onCancel={handleCancel}
       footer={null}
       width={600}
-      destroyOnClose // ✅ clears content when modal closes
+      destroyOnClose 
     >
       <div className="mb-20 mt-4">
         <div className="font-bold text-center mb-11">Edit Category</div>

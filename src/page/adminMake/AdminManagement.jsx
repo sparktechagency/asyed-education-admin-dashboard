@@ -1,45 +1,27 @@
-import { Input, message, Pagination, Table } from "antd";
+import { Input, message, Pagination, Popconfirm, Table } from "antd";
 import { useState } from "react";
-import { BiBlock } from "react-icons/bi";
-
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { Navigate } from "../../Navigate";
 import { SearchOutlined } from "@ant-design/icons";
 import AddAdmin from "./AddAdmin";
+import { useDeleteAdminMutation, useGetAdminsQuery } from "../redux/api/adminApi";
 
 const AdminManagement = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  const [admins, setAdmins] = useState([
-    {
-      _id: "1",
-      name: "Foisal Uddin",
-      email: "foisal@example.com",
-      userType: "Super Admin",
-      blocked: false,
-    },
-    {
-      _id: "2",
-      name: "Amina Khan",
-      email: "amina@example.com",
-      userType: "Admin",
-      blocked: false,
-    },
-    {
-      _id: "3",
-      name: "Karim Ali",
-      email: "karim@example.com",
-      userType: "Moderator",
-      blocked: true,
-    },
-  ]);
+  const { data: adminss, isLoading } = useGetAdminsQuery();
+  const [deleteAdmin] = useDeleteAdminMutation();
+
+  const admins = adminss?.data || [];
 
   const [openAddModal, setOpenAddModal] = useState(false);
 
   // Filter based on search
   const filteredAdmins = admins.filter((admin) =>
-    admin.name.toLowerCase().includes(search.toLowerCase())
+    `${admin?.firstName} ${admin?.lastName}`.toLowerCase().includes(search.toLowerCase()) ||
+    admin?.email?.toLowerCase().includes(search.toLowerCase())
   );
 
   // Pagination
@@ -51,13 +33,17 @@ const AdminManagement = () => {
 
   const handlePageChange = (page) => setCurrentPage(page);
 
-  const handleBlockAdmin = (id) => {
-    setAdmins((prev) =>
-      prev.map((admin) =>
-        admin._id === id ? { ...admin, blocked: !admin.blocked } : admin
-      )
-    );
-    message.success("Admin status updated");
+  const handleDeleteAdmin = async (id) => {
+    try {
+      const response = await deleteAdmin(id).unwrap();
+      if (response?.success) {
+        message.success(response?.message || "Admin deleted successfully");
+      } else {
+        message.error(response?.message || "Failed to delete admin");
+      }
+    } catch (error) {
+      message.error(error?.data?.message || "Failed to delete admin");
+    }
   };
 
   const columns = [
@@ -69,9 +55,9 @@ const AdminManagement = () => {
     },
     {
       title: "Name",
-      dataIndex: "name",
       key: "name",
       align: "center",
+      render: (_, record) => `${record?.firstName} ${record?.lastName}`
     },
     {
       title: "Email",
@@ -80,10 +66,11 @@ const AdminManagement = () => {
       align: "center",
     },
     {
-      title: "User Type",
-      dataIndex: "userType",
-      key: "userType",
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
       align: "center",
+      render: (role) => <span className="capitalize">{role}</span>
     },
     {
       title: "Actions",
@@ -91,16 +78,16 @@ const AdminManagement = () => {
       align: "center",
       render: (_, record) => (
         <div className="flex justify-center items-center gap-2">
-          <button
-            onClick={() => handleBlockAdmin(record._id)}
-            className={`p-2 rounded text-white transition-all ${
-              record.blocked
-                ? "bg-yellow-600 hover:bg-yellow-700"
-                : "bg-gray-600 hover:bg-gray-700"
-            }`}
+          <Popconfirm
+            title="Are you sure to delete this admin?"
+            onConfirm={() => handleDeleteAdmin(record._id)}
+            okText="Yes"
+            cancelText="No"
           >
-            <BiBlock />
-          </button>
+            <div className="w-[36px] h-[36px] bg-[#004F44] flex justify-center items-center text-white rounded cursor-pointer">
+              <RiDeleteBin6Line />
+            </div>
+          </Popconfirm>
         </div>
       ),
     },
@@ -120,14 +107,14 @@ const AdminManagement = () => {
             prefix={<SearchOutlined />}
             style={{ maxWidth: "500px", height: "40px" }}
           />
-         <div>
-             <button
-            onClick={() => setOpenAddModal(true)}
-            className="bg-[#004F44] w-[150px] text-white py-2 rounded"
-          >
-            Add Admin
-          </button>
-         </div>
+          <div>
+            <button
+              onClick={() => setOpenAddModal(true)}
+              className="bg-[#004F44] w-[150px] text-white py-2 rounded"
+            >
+              Add Admin
+            </button>
+          </div>
         </div>
       </div>
 
@@ -137,7 +124,8 @@ const AdminManagement = () => {
         rowKey="_id"
         pagination={false}
         scroll={{ x: "max-content" }}
-         className="custom-table"
+        className="custom-table"
+        loading={isLoading}
       />
 
       <div className="mt-4 flex justify-center">

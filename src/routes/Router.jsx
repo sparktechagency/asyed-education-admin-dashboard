@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import ProtectedRoute from "../protectedRoute/ProtectedRoute";
 import DashboardLayout from "../layout/dashboardLayout/DashboardLayout";
 import Dashboard from "../components/Dashboard/Dashboard";
 import UserManagement from "../page/UserManagement/UserManagement";
@@ -37,9 +38,9 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-     
-        <DashboardLayout></DashboardLayout>
-      
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
     ),
     children: [
       {
@@ -50,11 +51,11 @@ export const router = createBrowserRouter([
         path: "/dashboard/UserManagement",
         element: <UserManagement></UserManagement>,
       },
-       {
+      {
         path: "/dashboard/parentsManagement",
         element: <ParentsManagement></ParentsManagement>,
       },
-       {
+      {
         path: "/dashboard/tutorManagement",
         element: <TutorManagement></TutorManagement>,
       },
@@ -66,15 +67,15 @@ export const router = createBrowserRouter([
         path: "/dashboard/subjectManagement",
         element: <SubjectManage></SubjectManage>,
       },
-       {
+      {
         path: "/dashboard/packageManagement",
         element: <PackageManagement></PackageManagement>
       },
-       {
+      {
         path: "/dashboard/support",
         element: <SupportTab></SupportTab>
       },
-       {
+      {
         path: "/dashboard/consultManagement",
         element: <ConsultationReq></ConsultationReq>,
       },
@@ -82,19 +83,19 @@ export const router = createBrowserRouter([
         path: "/dashboard/tutionManagement",
         element: <ManageTution></ManageTution>,
       },
-       {
+      {
         path: "/dashboard/videoCreatorManagement",
         element: <VedioManage></VedioManage>,
       },
-       {
+      {
         path: "/dashboard/adminManage",
-        element:<AdminManagement></AdminManagement>,
+        element: <AdminManagement></AdminManagement>,
       },
-       {
+      {
         path: "/dashboard/bannerManagement",
         element: <Baner></Baner>
       },
-       {
+      {
         path: "/dashboard/blogManagement",
         element: <BlogManagement></BlogManagement>,
       },
@@ -110,7 +111,7 @@ export const router = createBrowserRouter([
         path: "/dashboard/CategoriesManagement/Subcategory",
         element: <Subcategory></Subcategory>,
       },
-      
+
       {
         path: "/dashboard/Settings/profile",
         element: <Profile></Profile>,
